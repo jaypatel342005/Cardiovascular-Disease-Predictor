@@ -10,8 +10,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-# Allow all origins for /api/* with support for Content-Type headers
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+# Allow all origins matching /api/*
+CORS(app)
 
 # --- Model Loading ---
 MODEL_PATH = 'cardio_model_week3.pkl'
