@@ -1,0 +1,8 @@
+web/backend/venv
+web/backend/__pycache__
+web/backend/*.pyc
+web/frontend/node_modules
+.git
+.ds_store
+*.zip
+*.tar.gz
