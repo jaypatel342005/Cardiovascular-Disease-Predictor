@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/python/:path*",
+        destination: "https://cardiovascular-disease-predictor-3q.vercel.app/api/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

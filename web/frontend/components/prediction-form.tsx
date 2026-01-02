@@ -119,7 +119,7 @@ export function PredictionForm() {
         active: values.active ? 1 : 0,
       };
 
-      const response = await fetch("https://cardiovascular-disease-predictor-3q.vercel.app/api/predict", {
+      const response = await fetch("/api/python/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

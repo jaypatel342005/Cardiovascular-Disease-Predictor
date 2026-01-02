@@ -39,11 +39,11 @@ def load_model():
 
 load_model()
 
-@app.route('/api/health', methods=['GET'])
+@app.route('/health', methods=['GET'])
 def health():
     return jsonify({"status": "healthy", "model_loaded": 'model' in model_data})
 
-@app.route('/api/predict', methods=['POST', 'OPTIONS'])
+@app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
     if 'model' not in model_data:
         logger.error("Predict called but model is not loaded.")
