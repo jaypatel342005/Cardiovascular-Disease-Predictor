@@ -1,14 +1,7 @@
-# Whitelist Mode: Ignore everything first
-*
-
-# Unignore the valid source code
-!app.py
-!utils.py
-!requirements.txt
-!*.pkl
-!.gitignore
-
-# Explicitly exclude the heavy stuff (redundant but safe)
+venv
 venv/
+__pycache__
 __pycache__/
 *.pyc
+.env
+.DS_Store
