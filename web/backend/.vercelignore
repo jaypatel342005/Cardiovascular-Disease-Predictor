@@ -4,13 +4,10 @@
 *
 
 # 2. Unignore the items we MUST have
-!vercel.json
-!app.py
-!utils.py
+!api/
 !requirements.txt
-!*.pkl
 !.gitignore
 
-# 3. Explicitly ignore the heavy folders (just to be absolutely safe)
-venv/
-__pycache__/
+# 3. Explicitly ignore the heavy folders (redundant but safe)
+!api/venv/
+!api/__pycache__/
