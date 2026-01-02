@@ -3,7 +3,8 @@ import pickle
 import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from utils import preprocess_input, generate_health_tips
+# Use relative import for sibling file in api/ directory
+from .utils import preprocess_input, generate_health_tips
 
 # --- Configuration ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -21,7 +22,8 @@ def after_request(response):
     return response
 
 # --- Model Loading ---
-MODEL_PATH = 'cardio_model_week3.pkl'
+# Use absolute path relative to this file
+MODEL_PATH = os.path.join(os.path.dirname(__file__), 'cardio_model_week3.pkl')
 model_data = {}
 
 def load_model():
@@ -83,6 +85,4 @@ def predict():
         logger.error(f"Prediction Error: {e}", exc_info=True)
         return jsonify({"error": str(e)}), 400
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8080))
-    app.run(debug=True, host='0.0.0.0', port=port)
+# Vercel requires the app object to be exposed as 'app'
