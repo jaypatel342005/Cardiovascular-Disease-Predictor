@@ -1,0 +1,17 @@
+# Strict Whitelist Mode
+
+# 1. Ignore EVERYTHING first
+*
+
+# 2. Unignore the items we MUST have
+!vercel.json
+!app.py
+!utils.py
+!api/utils.py
+!requirements.txt
+!*.pkl
+!.gitignore
+
+# 3. Explicitly ignore the heavy folders (just to be absolutely safe)
+venv/
+__pycache__/
