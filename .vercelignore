@@ -1,8 +1,12 @@
 web/backend/venv
 web/venv_backend_safe
 venv_backend_safe
+venv
+.venv
+env
 **/venv
 **/venv_backend_safe
+**/__pycache__
 **/.ipynb_checkpoints
 web/backend/*.pyc
 web/frontend/node_modules
