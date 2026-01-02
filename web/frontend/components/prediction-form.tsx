@@ -95,7 +95,6 @@ export function PredictionForm() {
 
   const prevStep = () => setCurrentStep(prev => prev - 1);
 
-  // Auto-scroll to top when result is ready
   useEffect(() => {
     if (result) {
       window.scrollTo({ top: 0, behavior: 'smooth' });

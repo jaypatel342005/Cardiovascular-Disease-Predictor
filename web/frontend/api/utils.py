@@ -1,4 +1,4 @@
-import numpy as np
+import pandas as pd
 import logging
 
 # Configure logger (handlers will be set in app.py or basicConfig here)
@@ -38,30 +38,30 @@ def preprocess_input(data, scaler=None):
 
         map_val = (ap_hi + 2 * ap_lo) / 3.0
 
-        # Create numpy array directly (order matters!)
-        features = np.array([[
-            gender,
-            height,
-            weight,
-            ap_hi,
-            ap_lo,
-            cholesterol,
-            gluc,
-            smoke,
-            alco,
-            active,
-            age_years,
-            bmi,
-            map_val
-        ]])
+        features = {
+            'gender': [gender],
+            'height': [height],
+            'weight': [weight],
+            'ap_hi': [ap_hi],
+            'ap_lo': [ap_lo],
+            'cholesterol': [cholesterol],
+            'gluc': [gluc],
+            'smoke': [smoke],
+            'alco': [alco],
+            'active': [active],
+            'age_years': [age_years],
+            'bmi': [bmi],
+            'MAP': [map_val]
+        }
+        
+        df = pd.DataFrame(features)
         
         if scaler:
-            # Scaler can usually handle numpy arrays (feature names will be lost, but values preserved)
-            scaled_array = scaler.transform(features)
+            scaled_array = scaler.transform(df)
             return scaled_array
         else:
             logger.warning("Scaler not provided, returning raw values.")
-            return features
+            return df.values
             
     except Exception as e:
         logger.error(f"Error in preprocessing: {e}")

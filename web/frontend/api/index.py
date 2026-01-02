@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app)
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), 'cardio_model_week3.pkl')
+MODEL_PATH = 'cardio_model_week3.pkl'
 model_data = {}
 
 def load_model():
