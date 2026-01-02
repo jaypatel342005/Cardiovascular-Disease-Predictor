@@ -1,13 +1,5 @@
-# Strict Whitelist Mode
-
-# 1. Ignore EVERYTHING first
-*
-
-# 2. Unignore the items we MUST have
-!api/
-!requirements.txt
-!.gitignore
-
-# 3. Explicitly ignore the heavy folders (redundant but safe)
-!api/venv/
-!api/__pycache__/
+venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
