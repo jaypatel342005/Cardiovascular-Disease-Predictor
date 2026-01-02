@@ -1,5 +1,14 @@
-venv/
-__pycache__/
-*.pyc
-.env
-.DS_Store
+# Strict Whitelist Mode - Final Attempt
+
+# 1. Ignore EVERYTHING first (Kills venv, __pycache__, logs, etc.)
+*
+
+# 2. Allow Configuration
+!requirements.txt
+!.gitignore
+
+# 3. Allow API Folder and its contents
+!api/
+!api/index.py
+!api/utils.py
+!api/cardio_model_week3.pkl
