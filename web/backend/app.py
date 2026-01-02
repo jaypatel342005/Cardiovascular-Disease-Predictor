@@ -13,13 +13,6 @@ app = Flask(__name__)
 # Allow all origins matching /api/*
 CORS(app)
 
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    return response
-
 # --- Model Loading ---
 MODEL_PATH = 'cardio_model_week3.pkl'
 model_data = {}
