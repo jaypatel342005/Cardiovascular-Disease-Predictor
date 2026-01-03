@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, User, Ruler, Activity, Cigarette, Wine, Dumbbell, ArrowRight, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
