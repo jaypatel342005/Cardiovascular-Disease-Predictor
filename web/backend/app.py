@@ -17,6 +17,7 @@ CORS(app)
 MODEL_PATH = 'cardio_model_week3.pkl'
 model_data = {}
 
+
 def load_model():
     """Loads the model and scaler from disk."""
     global model_data
