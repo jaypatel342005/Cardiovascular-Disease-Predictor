@@ -1,8 +1,15 @@
-web/backend/venv
-web/backend/__pycache__
-web/backend/*.pyc
-web/frontend/node_modules
+# Recursive ignores for heavy folders anywhere
+**/venv
+**/node_modules
+**/__pycache__
+**/*.pyc
+**/*.zip
+**/*.tar.gz
+**/*.csv
+**/*.ipynb
 .git
 .ds_store
-*.zip
-*.tar.gz
+
+# Specifics
+web/backend/venv
+web/frontend/node_modules

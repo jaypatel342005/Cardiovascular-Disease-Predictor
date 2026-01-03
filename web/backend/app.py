@@ -46,18 +46,18 @@ def predict():
         data = request.json
         logger.info(f"Received prediction request")
         
-        # Preprocess logic moved to utils
+        
         scaler = model_data.get('scaler')
         X_scaled = preprocess_input(data, scaler)
         
-        # Prediction
+        
         probs = model_data['model'].predict_proba(X_scaled)[0]
         prediction = model_data['model'].predict(X_scaled)[0]
         
         risk_probability = float(probs[1]) 
         risk_level = "High" if risk_probability > 0.5 else "Low"
         
-        # Health Tips logic moved to utils
+        
         tips = generate_health_tips(data)
 
         result = {
