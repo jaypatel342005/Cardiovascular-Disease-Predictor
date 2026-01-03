@@ -119,7 +119,7 @@ export function PredictionForm() {
         active: values.active ? 1 : 0,
       };
 
-      const response = await fetch("http://localhost:8080/api/predict", {
+      const response = await fetch("https://cardiovascular-disease-predictor-j5a7.onrender.com/api/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
