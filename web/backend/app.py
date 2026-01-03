@@ -32,6 +32,10 @@ def load_model():
 
 load_model()
 
+@app.route('/', methods=['GET'])
+def index():
+    return "Backend is Running! Use /api/predict to score data."
+
 @app.route('/api/health', methods=['GET'])
 def health():
     return jsonify({"status": "healthy", "model_loaded": 'model' in model_data})
