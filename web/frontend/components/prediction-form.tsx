@@ -119,15 +119,40 @@ export function PredictionForm() {
         active: values.active ? 1 : 0,
       };
 
-      const response = await fetch("https://cardiovascular-disease-predictor-j5a7.onrender.com/api/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      // API Endpoints to try in order (Render -> Vercel)
+      const apiEndpoints = [
+        "https://cardiovascular-disease-predictor-j5a7.onrender.com/api/predict",
+        "https://cardiovascular-disease-predictor-3q.vercel.app/api/predict"
+      ];
 
-      if (!response.ok) throw new Error("Failed to get prediction");
+      let response;
+      let usedUrl;
+
+      for (const url of apiEndpoints) {
+        try {
+          console.log(`Attempting to connect to: ${url}`);
+          const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (res.ok) {
+            response = res;
+            usedUrl = url;
+            break; // Success! Stop trying other URLs.
+          } else {
+            console.warn(`Failed to fetch from ${url}: Status ${res.status}`);
+          }
+        } catch (err) {
+          console.warn(`Connection error for ${url}:`, err);
+        }
+      }
+
+      if (!response) throw new Error("All prediction servers are currently unavailable. Please try again later.");
 
       const data = await response.json();
+      console.log(`Successfully received prediction from: ${usedUrl}`);
       setResult(data);
 
       try {
