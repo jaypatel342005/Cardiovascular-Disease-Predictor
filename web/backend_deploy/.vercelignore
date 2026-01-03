@@ -2,4 +2,5 @@
 *
 !api/index.py
 !requirements.txt
+!vercel.json
 !api/cardio_model_week3.pkl
