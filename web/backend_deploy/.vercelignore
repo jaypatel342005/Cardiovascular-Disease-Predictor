@@ -1,6 +1,5 @@
 # Sandbox Strict Ignore
 *
-!app.py
+!api/index.py
 !requirements.txt
-!vercel.json
 !cardio_model_week3.pkl

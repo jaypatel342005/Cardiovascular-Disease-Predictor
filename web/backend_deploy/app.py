@@ -123,7 +123,7 @@ def index():
 def health():
     return jsonify({"status": "healthy", "model_loaded": 'model' in model_data})
 
-@app.route('/api/predict', methods=['POST', 'OPTIONS'])
+@app.route('/api/predict', methods=['POST'])
 def predict():
     if 'model' not in model_data:
         logger.error("Predict called but model is not loaded.")
