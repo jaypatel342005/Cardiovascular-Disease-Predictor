@@ -31,28 +31,38 @@ export function StatsOverview({ history }: StatsOverviewProps) {
       value: totalAssessments,
       icon: BarChart3,
       description: "All time",
-      color: "text-blue-500"
+      color: "text-blue-500",
+      gradient: "from-blue-500/20 via-blue-500/10 to-transparent",
+      borderColor: "border-blue-500/20"
     },
     {
       title: "Average Risk",
       value: `${(avgProbability * 100).toFixed(1)}%`,
       icon: Activity,
       description: "Across all assessments",
-      color: avgProbability > 0.5 ? "text-orange-500" : "text-emerald-500"
+      color: avgProbability > 0.5 ? "text-orange-500" : "text-emerald-500",
+      gradient: avgProbability > 0.5 
+        ? "from-orange-500/20 via-orange-500/10 to-transparent" 
+        : "from-emerald-500/20 via-emerald-500/10 to-transparent",
+      borderColor: avgProbability > 0.5 ? "border-orange-500/20" : "border-emerald-500/20"
     },
     {
       title: "High Risk",
       value: highRiskCount,
       icon: TrendingUp,
       description: `${totalAssessments > 0 ? ((highRiskCount / totalAssessments) * 100).toFixed(0) : 0}% of total`,
-      color: "text-red-500"
+      color: "text-red-500",
+      gradient: "from-red-500/20 via-red-500/10 to-transparent",
+      borderColor: "border-red-500/20"
     },
     {
       title: "Low Risk",
       value: lowRiskCount,
       icon: TrendingDown,
       description: `${totalAssessments > 0 ? ((lowRiskCount / totalAssessments) * 100).toFixed(0) : 0}% of total`,
-      color: "text-emerald-500"
+      color: "text-emerald-500",
+      gradient: "from-emerald-500/20 via-emerald-500/10 to-transparent",
+      borderColor: "border-emerald-500/20"
     }
   ]
 
@@ -61,7 +71,7 @@ export function StatsOverview({ history }: StatsOverviewProps) {
       {stats.map((stat, index) => {
         const Icon = stat.icon
         return (
-          <Card key={index} className="border-border/50 bg-card/50 backdrop-blur-sm">
+          <Card key={index} className={`backdrop-blur-sm bg-gradient-to-br ${stat.gradient} ${stat.borderColor} border`}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 {stat.title}

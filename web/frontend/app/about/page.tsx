@@ -92,7 +92,7 @@ export default function AboutPage() {
           {/* Hero Section */}
           <motion.div variants={item} className="flex flex-col items-center text-center space-y-6 pt-10">
             <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-heartbeat" />
                 <div className="relative w-40 h-40 rounded-full bg-background p-1 overflow-hidden">
                     {imageError ? (
                         <div className="w-full h-full rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center text-5xl font-bold text-primary overflow-hidden">

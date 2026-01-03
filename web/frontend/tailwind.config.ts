@@ -55,7 +55,29 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+      keyframes: {
+        heartbeat: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '0.75' },
+          '50%': { transform: 'scale(1.1)', opacity: '1' },
+        },
+        'heartbeat-double': {
+          '0%': { transform: 'scale(1)' },
+          '14%': { transform: 'scale(1.3)' },
+          '28%': { transform: 'scale(1)' },
+          '42%': { transform: 'scale(1.3)' },
+          '70%': { transform: 'scale(1)' },
+        },
+        'ecg-scan': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        }
+      },
+      animation: {
+        heartbeat: 'heartbeat 2s infinite ease-in-out',
+        'heartbeat-double': 'heartbeat-double 1.3s ease-in-out infinite',
+        'ecg-scan': 'ecg-scan 2s linear infinite',
+      }
   	}
   },
   plugins: [require("tailwindcss-animate")],

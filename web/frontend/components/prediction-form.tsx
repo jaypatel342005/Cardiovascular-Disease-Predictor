@@ -51,6 +51,7 @@ export function PredictionForm() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [loadingStatus, setLoadingStatus] = useState("Analyzing Vitals...");
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -100,8 +101,29 @@ export function PredictionForm() {
     }
   }, [result]);
 
+  useEffect(() => {
+    if (!loading) return;
+    
+    const statuses = [
+        "Connecting to Neural Network...",
+        "Analyzing Blood Pressure Trends...",
+        "Evaluating Cholesterol Levels...",
+        "Processing Health Metrics...",
+        "Calculating Risk Probability..."
+    ];
+    
+    let i = 0;
+    const interval = setInterval(() => {
+        setLoadingStatus(statuses[i % statuses.length]);
+        i++;
+    }, 800);
+    
+    return () => clearInterval(interval);
+  }, [loading]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
+    setLoadingStatus("Connecting to Neural Network...");
     setResult(null);
     const toastId = toast.loading("Analyzing health data...");
 
@@ -130,11 +152,19 @@ export function PredictionForm() {
       for (const url of apiEndpoints) {
         try {
           console.log(`Attempting to connect to: ${url}`);
+          
+          // Add timeout to fallback if server is unresponsive
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+
           const res = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
+            signal: controller.signal
           });
+          
+          clearTimeout(timeoutId);
 
           if (res.ok) {
             response = res;
@@ -205,6 +235,33 @@ export function PredictionForm() {
   return (
     <div className="w-full max-w-[1400px] mx-auto p-4">
       <AnimatePresence mode="wait">
+      {loading && (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-background/80 backdrop-blur-md flex flex-col items-center justify-center p-4"
+        >
+            <div className="relative">
+                <div className="absolute inset-0 bg-red-500/30 blur-[50px] rounded-full animate-heartbeat-double" />
+                <div className="relative bg-background p-6 rounded-full border border-red-100 dark:border-red-900/30 shadow-2xl animate-heartbeat-double">
+                    <Activity className="w-16 h-16 text-red-500" />
+                </div>
+            </div>
+            <motion.h3 
+                className="mt-8 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-indigo-600 tabular-nums"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+            >
+                {loadingStatus}
+            </motion.h3>
+            <p className="mt-2 text-muted-foreground text-center max-w-sm animate-pulse">
+                Our AI models are processing your health metrics to calculate risk probability.
+            </p>
+        </motion.div>
+      )}
+
       {result ? (
         <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
@@ -270,7 +327,7 @@ export function PredictionForm() {
            </div>
         </motion.div>
       ) : (
-        <Card className="max-w-3xl mx-auto border-border/50 bg-card/40 backdrop-blur-xl shadow-xl relative overflow-hidden">
+        <Card className={`max-w-3xl mx-auto border-border/50 bg-card/40 backdrop-blur-xl shadow-xl relative overflow-hidden transition-opacity duration-500 ${loading ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
              {/* Progress Bar */}
              <div className="absolute top-0 left-0 h-1 bg-primary/20 w-full">
                 <motion.div 
@@ -521,7 +578,7 @@ export function PredictionForm() {
                             disabled={loading}
                             className="ml-auto bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all min-w-[120px] h-9"
                         >
-                             {loading ? <Loader2 className="animate-spin" /> : "Analyze Risk"}
+                             Analyze Risk
                         </Button>
                     )}
                 </div>
