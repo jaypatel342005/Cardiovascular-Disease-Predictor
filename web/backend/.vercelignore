@@ -7,7 +7,6 @@
 !vercel.json
 !app.py
 !utils.py
-!api/utils.py
 !requirements.txt
 !*.pkl
 !.gitignore
