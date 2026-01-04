@@ -153,7 +153,6 @@ export function PredictionForm() {
         try {
           console.log(`Attempting to connect to: ${url}`);
           
-          // Add timeout to fallback if server is unresponsive
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
 
