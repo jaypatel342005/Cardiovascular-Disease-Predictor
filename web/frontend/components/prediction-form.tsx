@@ -142,8 +142,8 @@ export function PredictionForm() {
 
       // API Endpoints to try in order (Render -> Vercel)
       const apiEndpoints = [
-        "https://cardiovascular-disease-predictor-j5a7.onrender.com/api/predict",
-        "https://cardiovascular-disease-predictor-3q.vercel.app/api/predict"
+        "https:/cardioaiapi.vercel.app/api/predict",
+        "https:/cardiovascular-disease-predictor-j5a7.onrender.com/api/predict"
       ];
 
       let response;
