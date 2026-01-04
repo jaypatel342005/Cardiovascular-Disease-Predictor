@@ -1,17 +1,40 @@
 import os
 import pickle
 import logging
+from contextlib import asynccontextmanager
 import pandas as pd
+import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Optional, Union, Any, List, Dict
+from pydantic import BaseModel, Field
 
 # --- Configuration ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Cardio Disease Prediction API")
+MODEL_PATH = 'cardio_model_week3.pkl'
+model_data = {}
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load model on startup
+    global model_data
+    if os.path.exists(MODEL_PATH):
+        try:
+            with open(MODEL_PATH, 'rb') as f:
+                model_data = pickle.load(f)
+            logger.info("Model and Scaler loaded successfully.")
+        except Exception as e:
+            logger.error(f"Error loading model: {e}")
+            model_data = {}
+    else:
+        logger.error(f"Model file not found at {MODEL_PATH}")
+        model_data = {}
+    yield
+    # Clean up resources if needed
+    model_data.clear()
+
+app = FastAPI(lifespan=lifespan)
 
 # Allow all origins
 app.add_middleware(
@@ -22,29 +45,43 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# --- Pydantic Models ---
+class CardioInput(BaseModel):
+    gender: str = Field(default="female")
+    height: float = Field(default=165.0)
+    weight: float = Field(default=70.0)
+    ap_hi: float = Field(default=120.0)
+    ap_lo: float = Field(default=80.0)
+    cholesterol: int = Field(default=1)
+    gluc: int = Field(default=1)
+    smoke: int = Field(default=0)
+    alco: int = Field(default=0)
+    active: int = Field(default=1)
+    age: float = Field(default=30.0)
+
 # --- Helper Functions ---
-def preprocess_input(data, scaler=None):
+def preprocess_input(data: CardioInput, scaler=None):
     """
-    Preprocess input dictionary to match model features:
+    Preprocess input Pydantic model to match model features:
     ['gender', 'height', 'weight', 'ap_hi', 'ap_lo', 'cholesterol', 'gluc', 'smoke', 'alco', 'active', 'age_years', 'bmi', 'MAP']
     """
     gender_map = {'female': 1, 'male': 2}
-    gender_input = str(data.get('gender', '')).lower()
+    gender_input = data.gender.lower()
     gender = gender_map.get(gender_input, 1) 
 
-    height = float(data.get('height', 165))
-    weight = float(data.get('weight', 70))
-    ap_hi = float(data.get('ap_hi', 120))
-    ap_lo = float(data.get('ap_lo', 80))
-    cholesterol = int(data.get('cholesterol', 1))
-    gluc = int(data.get('gluc', 1))
-    smoke = int(data.get('smoke', 0))
-    alco = int(data.get('alco', 0))
-    active = int(data.get('active', 1))
-    age_years = float(data.get('age', 30))
+    height = data.height
+    weight = data.weight
+    ap_hi = data.ap_hi
+    ap_lo = data.ap_lo
+    cholesterol = data.cholesterol
+    gluc = data.gluc
+    smoke = data.smoke
+    alco = data.alco
+    active = data.active
+    age_years = data.age
 
     height_m = height / 100.0
-    bmi = weight / (height_m ** 2)
+    bmi = weight / (height_m ** 2) if height_m > 0 else 0
 
     map_val = (ap_hi + 2 * ap_lo) / 3.0
 
@@ -70,81 +107,36 @@ def preprocess_input(data, scaler=None):
         return scaler.transform(df)
     return df.values
 
-def generate_health_tips(data):
+def generate_health_tips(data: CardioInput):
     """Generates personalized health tips based on input data."""
     tips = []
     
     # Blood Pressure
-    ap_hi = float(data.get('ap_hi', 120))
-    if ap_hi > 130:
+    if data.ap_hi > 130:
         tips.append("Your systolic blood pressure is elevated. Consider following the DASH diet and reducing sodium intake.")
     
     # BMI
-    height = float(data.get('height', 165)) / 100
-    weight = float(data.get('weight', 70))
-    bmi = weight / (height**2)
+    height_m = data.height / 100.0
+    bmi = data.weight / (height_m ** 2) if height_m > 0 else 0
     if bmi > 25:
         tips.append("Your BMI indicates you may be overweight. Incorporating 30 minutes of daily exercise can help.")
         
     # Cholesterol
-    chol = int(data.get('cholesterol', 1))
-    if chol > 1:
+    if data.cholesterol > 1:
         tips.append("Cholesterol levels seem high. Avoid trans fats and increase soluble fiber (oats, fruits).")
         
     # Smoking
-    if int(data.get('smoke', 0)) == 1:
+    if data.smoke == 1:
         tips.append("Smoking significantly increases cardiovascular risk. Seek support to quit.")
         
     # Activity
-    if int(data.get('active', 1)) == 0:
+    if data.active == 0:
         tips.append("Detailed analysis suggests increasing physical activity. Try brisk walking for 20 mins a day.")
         
     if not tips:
         tips.append("Great job! Maintain your healthy lifestyle.")
         
     return tips
-
-# --- Model Loading ---
-MODEL_PATH = 'cardio_model_week3.pkl'
-model_data = {}
-
-def load_model():
-    """Loads the model and scaler from disk."""
-    global model_data
-    if os.path.exists(MODEL_PATH):
-        try:
-            with open(MODEL_PATH, 'rb') as f:
-                model_data = pickle.load(f)
-            logger.info("Model and Scaler loaded successfully.")
-        except Exception as e:
-            logger.error(f"Error loading model: {e}")
-    else:
-        logger.error(f"Model file not found at {MODEL_PATH}")
-
-# Load model on startup
-load_model()
-
-# --- Pydantic Models ---
-class PatientData(BaseModel):
-    name: Optional[str] = None
-    dob: Optional[str] = None
-    gender: Union[str, int]
-    age: Union[int, float]
-    height: float
-    weight: float
-    ap_hi: float
-    ap_lo: float
-    cholesterol: int
-    gluc: int
-    smoke: int
-    alco: int
-    active: int
-
-class PredictionResponse(BaseModel):
-    prediction: int
-    probability: float
-    risk_level: str
-    tips: List[str]
 
 # --- Routes ---
 
@@ -156,8 +148,8 @@ def index():
 def health():
     return {"status": "healthy", "model_loaded": 'model' in model_data}
 
-@app.post("/api/predict", response_model=PredictionResponse)
-def predict(data: PatientData):
+@app.post("/api/predict")
+def predict(input_data: CardioInput):
     if 'model' not in model_data:
         logger.error("Predict called but model is not loaded.")
         raise HTTPException(status_code=500, detail="Model not loaded")
@@ -165,21 +157,16 @@ def predict(data: PatientData):
     try:
         logger.info(f"Received prediction request")
         
-        # Convert Pydantic model to dict for utils processing
-        input_data = data.dict()
-        
-        # Preprocessing
         scaler = model_data.get('scaler')
         X_scaled = preprocess_input(input_data, scaler)
         
-        # Prediction
+        # model predict expects 2D array
         probs = model_data['model'].predict_proba(X_scaled)[0]
         prediction = model_data['model'].predict(X_scaled)[0]
         
         risk_probability = float(probs[1]) 
         risk_level = "High" if risk_probability > 0.5 else "Low"
         
-        # Health Tips
         tips = generate_health_tips(input_data)
 
         result = {
@@ -196,7 +183,7 @@ def predict(data: PatientData):
         logger.error(f"Prediction Error: {e}", exc_info=True)
         raise HTTPException(status_code=400, detail=str(e))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get('PORT', 8080))
-    uvicorn.run(app, host='0.0.0.0', port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port)
