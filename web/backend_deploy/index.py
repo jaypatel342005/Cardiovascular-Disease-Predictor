@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 # --- Configuration ---
-# Set up logging to see errors in Vercel logs
+# Set up logging to help debug 404/500 errors in Vercel logs
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ model_data = {}
 
 # Get the directory where THIS file (index.py) is located
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Construct the full path to the model
+# Construct the full path to the model in the same folder
 MODEL_PATH = os.path.join(BASE_DIR, 'cardio_model_week3.pkl')
 
 def load_model():
@@ -146,6 +146,10 @@ def predict():
         scaler = model_data.get('scaler')
         X_scaled = preprocess_input(data, scaler)
         
+        # Ensure model and scaler are correct types
+        if not hasattr(model_data['model'], 'predict'):
+             return jsonify({"error": "Invalid model object loaded"}), 500
+
         probs = model_data['model'].predict_proba(X_scaled)[0]
         prediction = model_data['model'].predict(X_scaled)[0]
         
