@@ -7,19 +7,20 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 # --- Configuration ---
+# Set up logging to see errors in Vercel logs
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-# Allow all origins matching /api/*
-CORS(app)
+CORS(app)  # Allow all origins
 
-# --- Model Loading Logic ---
-# Since we moved the model INSIDE the api folder, we look in the current directory.
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, 'cardio_model_week3.pkl')
-
+# --- Model Loading Logic (Fail-Safe) ---
 model_data = {}
+
+# Get the directory where THIS file (index.py) is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Construct the full path to the model
+MODEL_PATH = os.path.join(BASE_DIR, 'cardio_model_week3.pkl')
 
 def load_model():
     """Loads the model and scaler from disk."""
@@ -28,16 +29,18 @@ def load_model():
         try:
             with open(MODEL_PATH, 'rb') as f:
                 model_data = pickle.load(f)
-            logger.info(f"Model and Scaler loaded successfully from {MODEL_PATH}")
+            logger.info(f"SUCCESS: Model loaded from {MODEL_PATH}")
         except Exception as e:
-            logger.error(f"Error loading model: {e}")
-            # Initialize empty model_data to prevent crashes if load fails
-            model_data = {} 
+            logger.error(f"CRITICAL: Error loading model: {e}")
+            # Initialize empty to prevent crash
+            model_data = {}
     else:
-        logger.error(f"Model file not found at {MODEL_PATH}")
+        logger.error(f"CRITICAL: Model file not found at {MODEL_PATH}")
 
-# Load model immediately on startup
+# Load model immediately when app starts
 load_model()
+
+# --- Helper Functions ---
 
 def preprocess_input(data, scaler=None):
     """
@@ -58,9 +61,9 @@ def preprocess_input(data, scaler=None):
     active = int(data.get('active', 1))
     age_years = float(data.get('age', 30))
 
+    # Derived features
     height_m = height / 100.0
     bmi = weight / (height_m ** 2)
-
     map_val = (ap_hi + 2 * ap_lo) / 3.0
 
     features = {
@@ -86,42 +89,45 @@ def preprocess_input(data, scaler=None):
     return df.values
 
 def generate_health_tips(data):
-    """Generates personalized health tips based on input data."""
+    """Generates personalized health tips."""
     tips = []
     
-    # Blood Pressure
     ap_hi = float(data.get('ap_hi', 120))
     if ap_hi > 130:
-        tips.append("Your systolic blood pressure is elevated. Consider following the DASH diet and reducing sodium intake.")
+        tips.append("Your systolic blood pressure is elevated. Consider following the DASH diet.")
     
-    # BMI
     height = float(data.get('height', 165)) / 100
     weight = float(data.get('weight', 70))
     bmi = weight / (height**2)
     if bmi > 25:
-        tips.append("Your BMI indicates you may be overweight. Incorporating 30 minutes of daily exercise can help.")
+        tips.append("Your BMI indicates you may be overweight. 30 mins of daily exercise can help.")
         
-    # Cholesterol
     chol = int(data.get('cholesterol', 1))
     if chol > 1:
-        tips.append("Cholesterol levels seem high. Avoid trans fats and increase soluble fiber (oats, fruits).")
+        tips.append("Cholesterol levels seem high. Avoid trans fats.")
         
-    # Smoking
     if int(data.get('smoke', 0)) == 1:
-        tips.append("Smoking significantly increases cardiovascular risk. Seek support to quit.")
+        tips.append("Smoking significantly increases cardiovascular risk.")
         
-    # Activity
     if int(data.get('active', 1)) == 0:
-        tips.append("Detailed analysis suggests increasing physical activity. Try brisk walking for 20 mins a day.")
+        tips.append("Try to increase physical activity. Brisk walking for 20 mins a day helps.")
         
     if not tips:
         tips.append("Great job! Maintain your healthy lifestyle.")
         
     return tips
 
+# --- Routes ---
+
 @app.route('/', methods=['GET'])
 def index():
-    return "Backend is Running! Use /api/predict to score data."
+    # Diagnostic route to check if model is loaded
+    status = "Model Loaded" if 'model' in model_data else "Model NOT Loaded"
+    return jsonify({
+        "message": "Backend is Running!",
+        "model_status": status,
+        "path_checked": MODEL_PATH
+    })
 
 @app.route('/api/health', methods=['GET'])
 def health():
@@ -131,7 +137,7 @@ def health():
 def predict():
     if 'model' not in model_data:
         logger.error("Predict called but model is not loaded.")
-        return jsonify({"error": "Model not loaded"}), 500
+        return jsonify({"error": "Model not loaded. Check server logs."}), 500
 
     try:
         data = request.json
@@ -155,14 +161,13 @@ def predict():
             "tips": tips
         }
         
-        logger.info(f"Prediction success: {risk_level} (Prob: {risk_probability:.2f})")
         return jsonify(result)
 
     except Exception as e:
         logger.error(f"Prediction Error: {e}", exc_info=True)
         return jsonify({"error": str(e)}), 400
 
-# Required for Vercel
+# Vercel needs the 'app' variable exposed at the module level
 app = app 
 
 if __name__ == '__main__':
