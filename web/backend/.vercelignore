@@ -5,7 +5,7 @@
 
 # 2. Unignore the items we MUST have
 !vercel.json
-!app.py
+!index.py
 !requirements.txt
 !*.pkl
 
