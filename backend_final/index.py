@@ -2,7 +2,6 @@ import os
 import pickle
 import logging
 from contextlib import asynccontextmanager
-import pandas as pd
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -85,27 +84,27 @@ def preprocess_input(data: CardioInput, scaler=None):
 
     map_val = (ap_hi + 2 * ap_lo) / 3.0
 
-    features = {
-        'gender': [gender],
-        'height': [height],
-        'weight': [weight],
-        'ap_hi': [ap_hi],
-        'ap_lo': [ap_lo],
-        'cholesterol': [cholesterol],
-        'gluc': [gluc],
-        'smoke': [smoke],
-        'alco': [alco],
-        'active': [active],
-        'age_years': [age_years],
-        'bmi': [bmi],
-        'MAP': [map_val]
-    }
-    
-    df = pd.DataFrame(features)
+    # Ensure this order matches exactly what the model expects
+    # 'gender', 'height', 'weight', 'ap_hi', 'ap_lo', 'cholesterol', 'gluc', 'smoke', 'alco', 'active', 'age_years', 'bmi', 'MAP'
+    features = np.array([[
+        gender,
+        height,
+        weight,
+        ap_hi,
+        ap_lo,
+        cholesterol,
+        gluc,
+        smoke,
+        alco,
+        active,
+        age_years,
+        bmi,
+        map_val
+    ]])
     
     if scaler:
-        return scaler.transform(df)
-    return df.values
+        return scaler.transform(features)
+    return features
 
 def generate_health_tips(data: CardioInput):
     """Generates personalized health tips based on input data."""
