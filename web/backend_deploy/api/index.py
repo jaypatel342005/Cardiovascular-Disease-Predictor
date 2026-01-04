@@ -14,12 +14,10 @@ app = Flask(__name__)
 # Allow all origins matching /api/*
 CORS(app)
 
-# --- Model Loading Logic (Critical Fix) ---
-# This logic finds the current folder (api) and looks one level up for the model
-current_file_path = os.path.abspath(__file__)
-current_dir = os.path.dirname(current_file_path)
-parent_dir = os.path.dirname(current_dir)
-MODEL_PATH = os.path.join(parent_dir, 'cardio_model_week3.pkl')
+# --- Model Loading Logic ---
+# Since we moved the model INSIDE the api folder, we look in the current directory.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, 'cardio_model_week3.pkl')
 
 model_data = {}
 
@@ -33,15 +31,17 @@ def load_model():
             logger.info(f"Model and Scaler loaded successfully from {MODEL_PATH}")
         except Exception as e:
             logger.error(f"Error loading model: {e}")
+            # Initialize empty model_data to prevent crashes if load fails
+            model_data = {} 
     else:
         logger.error(f"Model file not found at {MODEL_PATH}")
 
+# Load model immediately on startup
 load_model()
 
 def preprocess_input(data, scaler=None):
     """
-    Preprocess input dictionary to match model features:
-    ['gender', 'height', 'weight', 'ap_hi', 'ap_lo', 'cholesterol', 'gluc', 'smoke', 'alco', 'active', 'age_years', 'bmi', 'MAP']
+    Preprocess input dictionary to match model features.
     """
     gender_map = {'female': 1, 'male': 2}
     gender_input = str(data.get('gender', '')).lower()
@@ -162,7 +162,7 @@ def predict():
         logger.error(f"Prediction Error: {e}", exc_info=True)
         return jsonify({"error": str(e)}), 400
 
-# Vercel needs this exposed
+# Required for Vercel
 app = app 
 
 if __name__ == '__main__':
