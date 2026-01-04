@@ -140,44 +140,57 @@ export function PredictionForm() {
         active: values.active ? 1 : 0,
       };
 
-      // API Endpoints to try in order (Render -> Vercel)
+      // API Endpoints to try concurrently (Vercel, Render, Localhost)
+      // "race" to see which one responds first successfully
       const apiEndpoints = [
-        "https:/cardioaiapi.vercel.app/api/predict",
-        "https:/cardiovascular-disease-predictor-j5a7.onrender.com/api/predict"
+        "https://cardioaiapi.vercel.app/api/predict",
+        "https://cardiovascular-disease-predictor-j5a7.onrender.com/api/predict",
+        "http://localhost:8082/api/predict"
       ];
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
 
       let response;
       let usedUrl;
 
-      for (const url of apiEndpoints) {
-        try {
-          console.log(`Attempting to connect to: ${url}`);
-          
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+      try {
+        console.log("Starting concurrent API requests...");
+        
+        // Create a promise for each endpoint
+        const requests = apiEndpoints.map(async (url) => {
+            try {
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+                
+                if (!res.ok) {
+                    throw new Error(`Status ${res.status}`);
+                }
+                
+                // If we get here, this request succeeded
+                return { response: res, url }; 
+            } catch (err) {
+                console.warn(`Request to ${url} failed or was slower:`, err);
+                throw err; // Re-throw to let Promise.any know this one failed
+            }
+        });
 
-          const res = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-            signal: controller.signal
-          });
-          
-          clearTimeout(timeoutId);
+        // Wait for the FIRST successful response
+        const winner = await Promise.any(requests);
+        
+        response = winner.response;
+        usedUrl = winner.url;
+        clearTimeout(timeoutId);
 
-          if (res.ok) {
-            response = res;
-            usedUrl = url;
-            break; // Success! Stop trying other URLs.
-          } else {
-            console.warn(`Failed to fetch from ${url}: Status ${res.status}`);
-          }
-        } catch (err) {
-          console.warn(`Connection error for ${url}:`, err);
-        }
+      } catch (error) {
+         // This block runs only if ALL requests fail (AggregateError)
+         console.error("All API requests failed:", error);
+         throw new Error("All prediction servers are currently unavailable. Please check your connection or try again later.");
       }
-
-      if (!response) throw new Error("All prediction servers are currently unavailable. Please try again later.");
 
       const data = await response.json();
       console.log(`Successfully received prediction from: ${usedUrl}`);
@@ -236,6 +249,7 @@ export function PredictionForm() {
       <AnimatePresence mode="wait">
       {loading && (
         <motion.div
+            key="loading"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -263,6 +277,7 @@ export function PredictionForm() {
 
       {result ? (
         <motion.div 
+            key="result"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
@@ -326,7 +341,7 @@ export function PredictionForm() {
            </div>
         </motion.div>
       ) : (
-        <Card className={`max-w-3xl mx-auto border-border/50 bg-card/40 backdrop-blur-xl shadow-xl relative overflow-hidden transition-opacity duration-500 ${loading ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <Card key="form" className={`max-w-3xl mx-auto border-border/50 bg-card/40 backdrop-blur-xl shadow-xl relative overflow-hidden transition-opacity duration-500 ${loading ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
              {/* Progress Bar */}
              <div className="absolute top-0 left-0 h-1 bg-primary/20 w-full">
                 <motion.div 
