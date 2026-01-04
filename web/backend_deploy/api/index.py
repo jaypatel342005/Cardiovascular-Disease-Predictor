@@ -6,6 +6,37 @@ import numpy as np
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+# --- Configuration ---
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+app = Flask(__name__)
+# Allow all origins matching /api/*
+CORS(app)
+
+# --- Model Loading Logic (Critical Fix) ---
+# This logic finds the current folder (api) and looks one level up for the model
+current_file_path = os.path.abspath(__file__)
+current_dir = os.path.dirname(current_file_path)
+parent_dir = os.path.dirname(current_dir)
+MODEL_PATH = os.path.join(parent_dir, 'cardio_model_week3.pkl')
+
+model_data = {}
+
+def load_model():
+    """Loads the model and scaler from disk."""
+    global model_data
+    if os.path.exists(MODEL_PATH):
+        try:
+            with open(MODEL_PATH, 'rb') as f:
+                model_data = pickle.load(f)
+            logger.info(f"Model and Scaler loaded successfully from {MODEL_PATH}")
+        except Exception as e:
+            logger.error(f"Error loading model: {e}")
+    else:
+        logger.error(f"Model file not found at {MODEL_PATH}")
+
+load_model()
 
 def preprocess_input(data, scaler=None):
     """
@@ -88,33 +119,6 @@ def generate_health_tips(data):
         
     return tips
 
-# --- Configuration ---
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-
-app = Flask(__name__)
-# Allow all origins matching /api/*
-CORS(app)
-
-# --- Model Loading ---
-MODEL_PATH = 'cardio_model_week3.pkl'
-model_data = {}
-
-def load_model():
-    """Loads the model and scaler from disk."""
-    global model_data
-    if os.path.exists(MODEL_PATH):
-        try:
-            with open(MODEL_PATH, 'rb') as f:
-                model_data = pickle.load(f)
-            logger.info("Model and Scaler loaded successfully.")
-        except Exception as e:
-            logger.error(f"Error loading model: {e}")
-    else:
-        logger.error(f"Model file not found at {MODEL_PATH}")
-
-load_model()
-
 @app.route('/', methods=['GET'])
 def index():
     return "Backend is Running! Use /api/predict to score data."
@@ -157,6 +161,9 @@ def predict():
     except Exception as e:
         logger.error(f"Prediction Error: {e}", exc_info=True)
         return jsonify({"error": str(e)}), 400
+
+# Vercel needs this exposed
+app = app 
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
