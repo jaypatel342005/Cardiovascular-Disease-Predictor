@@ -6,45 +6,11 @@ import numpy as np
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-# --- Configuration ---
-# Set up logging to help debug 404/500 errors in Vercel logs
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-
-app = Flask(__name__)
-CORS(app)  # Allow all origins
-
-# --- Model Loading Logic (Fail-Safe) ---
-model_data = {}
-
-# Get the directory where THIS file (index.py) is located
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Construct the full path to the model in the same folder
-MODEL_PATH = os.path.join(BASE_DIR, 'cardio_model_week3.pkl')
-
-def load_model():
-    """Loads the model and scaler from disk."""
-    global model_data
-    if os.path.exists(MODEL_PATH):
-        try:
-            with open(MODEL_PATH, 'rb') as f:
-                model_data = pickle.load(f)
-            logger.info(f"SUCCESS: Model loaded from {MODEL_PATH}")
-        except Exception as e:
-            logger.error(f"CRITICAL: Error loading model: {e}")
-            # Initialize empty to prevent crash
-            model_data = {}
-    else:
-        logger.error(f"CRITICAL: Model file not found at {MODEL_PATH}")
-
-# Load model immediately when app starts
-load_model()
-
-# --- Helper Functions ---
 
 def preprocess_input(data, scaler=None):
     """
-    Preprocess input dictionary to match model features.
+    Preprocess input dictionary to match model features:
+    ['gender', 'height', 'weight', 'ap_hi', 'ap_lo', 'cholesterol', 'gluc', 'smoke', 'alco', 'active', 'age_years', 'bmi', 'MAP']
     """
     gender_map = {'female': 1, 'male': 2}
     gender_input = str(data.get('gender', '')).lower()
@@ -61,9 +27,9 @@ def preprocess_input(data, scaler=None):
     active = int(data.get('active', 1))
     age_years = float(data.get('age', 30))
 
-    # Derived features
     height_m = height / 100.0
     bmi = weight / (height_m ** 2)
+
     map_val = (ap_hi + 2 * ap_lo) / 3.0
 
     features = {
@@ -89,45 +55,69 @@ def preprocess_input(data, scaler=None):
     return df.values
 
 def generate_health_tips(data):
-    """Generates personalized health tips."""
+    """Generates personalized health tips based on input data."""
     tips = []
     
+    # Blood Pressure
     ap_hi = float(data.get('ap_hi', 120))
     if ap_hi > 130:
-        tips.append("Your systolic blood pressure is elevated. Consider following the DASH diet.")
+        tips.append("Your systolic blood pressure is elevated. Consider following the DASH diet and reducing sodium intake.")
     
+    # BMI
     height = float(data.get('height', 165)) / 100
     weight = float(data.get('weight', 70))
     bmi = weight / (height**2)
     if bmi > 25:
-        tips.append("Your BMI indicates you may be overweight. 30 mins of daily exercise can help.")
+        tips.append("Your BMI indicates you may be overweight. Incorporating 30 minutes of daily exercise can help.")
         
+    # Cholesterol
     chol = int(data.get('cholesterol', 1))
     if chol > 1:
-        tips.append("Cholesterol levels seem high. Avoid trans fats.")
+        tips.append("Cholesterol levels seem high. Avoid trans fats and increase soluble fiber (oats, fruits).")
         
+    # Smoking
     if int(data.get('smoke', 0)) == 1:
-        tips.append("Smoking significantly increases cardiovascular risk.")
+        tips.append("Smoking significantly increases cardiovascular risk. Seek support to quit.")
         
+    # Activity
     if int(data.get('active', 1)) == 0:
-        tips.append("Try to increase physical activity. Brisk walking for 20 mins a day helps.")
+        tips.append("Detailed analysis suggests increasing physical activity. Try brisk walking for 20 mins a day.")
         
     if not tips:
         tips.append("Great job! Maintain your healthy lifestyle.")
         
     return tips
 
-# --- Routes ---
+# --- Configuration ---
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+app = Flask(__name__)
+# Allow all origins matching /api/*
+CORS(app)
+
+# --- Model Loading ---
+MODEL_PATH = 'cardio_model_week3.pkl'
+model_data = {}
+
+def load_model():
+    """Loads the model and scaler from disk."""
+    global model_data
+    if os.path.exists(MODEL_PATH):
+        try:
+            with open(MODEL_PATH, 'rb') as f:
+                model_data = pickle.load(f)
+            logger.info("Model and Scaler loaded successfully.")
+        except Exception as e:
+            logger.error(f"Error loading model: {e}")
+    else:
+        logger.error(f"Model file not found at {MODEL_PATH}")
+
+load_model()
 
 @app.route('/', methods=['GET'])
 def index():
-    # Diagnostic route to check if model is loaded
-    status = "Model Loaded" if 'model' in model_data else "Model NOT Loaded"
-    return jsonify({
-        "message": "Backend is Running!",
-        "model_status": status,
-        "path_checked": MODEL_PATH
-    })
+    return "Backend is Running! Use /api/predict to score data."
 
 @app.route('/api/health', methods=['GET'])
 def health():
@@ -137,7 +127,7 @@ def health():
 def predict():
     if 'model' not in model_data:
         logger.error("Predict called but model is not loaded.")
-        return jsonify({"error": "Model not loaded. Check server logs."}), 500
+        return jsonify({"error": "Model not loaded"}), 500
 
     try:
         data = request.json
@@ -146,10 +136,6 @@ def predict():
         scaler = model_data.get('scaler')
         X_scaled = preprocess_input(data, scaler)
         
-        # Ensure model and scaler are correct types
-        if not hasattr(model_data['model'], 'predict'):
-             return jsonify({"error": "Invalid model object loaded"}), 500
-
         probs = model_data['model'].predict_proba(X_scaled)[0]
         prediction = model_data['model'].predict(X_scaled)[0]
         
@@ -165,14 +151,12 @@ def predict():
             "tips": tips
         }
         
+        logger.info(f"Prediction success: {risk_level} (Prob: {risk_probability:.2f})")
         return jsonify(result)
 
     except Exception as e:
         logger.error(f"Prediction Error: {e}", exc_info=True)
         return jsonify({"error": str(e)}), 400
-
-# Vercel needs the 'app' variable exposed at the module level
-app = app 
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))

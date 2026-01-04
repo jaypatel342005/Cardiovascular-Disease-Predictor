@@ -27,7 +27,7 @@ export function SiteFooter({ className }: { className?: string }) {
                 <Github size={18} />
             </Link>
             <Link 
-                href="https://www.linkedin.com/in/jaypatel342005/" 
+                href="https://www.linkedin.com/in/jaypatel345/" 
                 target="_blank"
                 className="p-2 rounded-full bg-muted/30 hover:bg-blue-500/10 hover:scale-110 transition-all duration-300 text-muted-foreground hover:text-blue-500"
             >
