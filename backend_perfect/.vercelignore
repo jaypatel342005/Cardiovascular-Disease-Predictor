@@ -1,0 +1,8 @@
+
+# Deny list for Vercel
+.vercel
+venv/
+node_modules/
+.git/
+__pycache__/
+*.pyc
