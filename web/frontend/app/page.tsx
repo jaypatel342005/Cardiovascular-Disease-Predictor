@@ -22,7 +22,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Home",
+  title: "CardioAI - AI Heart Disease Prediction",
   description: "CardioAI uses advanced machine learning to predict cardiovascular disease risk based on clinical features. Test your heart health today.",
 };
 

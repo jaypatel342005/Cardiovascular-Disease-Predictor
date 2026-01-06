@@ -1,6 +1,17 @@
 import { PredictionForm } from '@/components/prediction-form';
 import { ModeToggle } from '@/components/mode-toggle';
 import { SiteFooter } from '@/components/site-footer';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "CardioAI Assessment - Heart Disease Prediction",
+  description: "Take CardioAI's advanced AI-powered assessment to evaluate your cardiovascular health risk factors instantly.",
+  openGraph: {
+    title: "CardioAI Assessment - Heart Disease Prediction",
+    description: "Take CardioAI's advanced AI-powered assessment to evaluate your cardiovascular health risk factors instantly.",
+    url: "https://cardio-ai-predictor.vercel.app/assessment",
+  },
+};
 
 export default function AssessmentPage() {
   return (

@@ -88,7 +88,7 @@ export function Navbar() {
             </Sheet>
         </div>
 
-        <div className="flex items-center gap-2 mr-4 md:mr-8">
+        <Link href="/" className="flex items-center gap-2 mr-4 md:mr-8 hover:opacity-80 transition-opacity">
             <div className="hidden md:block p-2 rounded-xl bg-primary/10 text-primary">
                 <HeartPulse className="w-6 h-6" />
             </div>
@@ -98,7 +98,7 @@ export function Navbar() {
             <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                 CardioAI
             </span>
-        </div>
+        </Link>
         
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-4 lg:space-x-6 mx-6">

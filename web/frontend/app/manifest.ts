@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'CardioAI - Cardiovascular Disease Predictor',
+    name: 'CardioAI - AI Heart Disease Prediction',
     short_name: 'CardioAI',
     description: 'Advanced ML-powered health risk assessment tool.',
     start_url: '/',

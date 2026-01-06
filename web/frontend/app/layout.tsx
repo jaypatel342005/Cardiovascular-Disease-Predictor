@@ -9,11 +9,11 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "CardioAI - Advanced Heart Disease Prediction",
+    default: "CardioAI - AI Heart Disease Prediction",
     template: "%s | CardioAI"
   },
-  description: "Advanced ML-powered health risk assessment using XGBoost and Random Forest models. Get instant heart disease predictions with 73%+ accuracy.",
-  keywords: ["Machine Learning", "Healthcare AI", "Heart Disease Prediction", "Cardiovascular Health", "XGBoost", "Medical AI"],
+  description: "CardioAI: Advanced ML-powered health risk assessment using XGBoost and Random Forest models. Get instant heart disease predictions with 73%+ accuracy.",
+  keywords: ["CardioAI", "Machine Learning", "Healthcare AI", "Heart Disease Prediction", "Cardiovascular Health", "XGBoost", "Medical AI"],
   authors: [{ name: "Jay Patel", url: "https://github.com/jaypatel342005" }],
   creator: "Jay Patel",
   metadataBase: new URL("https://cardio-ai-predictor.vercel.app"), // Replace with actual domain if known, or localhost for now
@@ -21,18 +21,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://cardio-ai-predictor.vercel.app",
-    title: "CardioAI - Advanced Heart Disease Prediction",
-    description: "Analyze your heart health with our advanced machine learning algorithms.",
+    title: "CardioAI - AI Heart Disease Prediction",
+    description: "CardioAI: Analyze your heart health with our advanced machine learning algorithms.",
     siteName: "CardioAI",
   },
   twitter: {
     card: "summary_large_image",
-    title: "CardioAI - Heart Disease Prediction",
+    title: "CardioAI - AI Heart Disease Prediction",
     description: "AI-powered cardiovascular risk assessment tool.",
     creator: "@jaypatel345", 
   },
   alternates: {
     canonical: "https://cardio-ai-predictor.vercel.app",
+  },
+  icons: {
+    icon: "/icon.svg",
   },
 };
 
