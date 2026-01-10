@@ -5,6 +5,8 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/navbar";
 
+import { BackgroundRippleEffect } from "@/components/ui/ripple";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -70,7 +72,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="min-h-screen flex flex-col">
+            <div className="min-h-screen flex flex-col relative">
+                <BackgroundRippleEffect />
                 <Navbar />
                 <main className="flex-1">
                     {children}
