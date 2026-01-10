@@ -15,7 +15,6 @@ model_data = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Load model on startup
     global model_data
     if os.path.exists(MODEL_PATH):
         try:
