@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-MODEL_PATH = 'cardio_model_week3.pkl'
+MODEL_PATH = 'best_xgboost_cvd_model.pkl'
 model_data = {}
 
 @asynccontextmanager
