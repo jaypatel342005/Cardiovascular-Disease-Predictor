@@ -140,54 +140,54 @@ export function PredictionForm() {
         active: values.active ? 1 : 0,
       };
 
-      // API Endpoints to try concurrently (Vercel, Render, Localhost)
-      // "race" to see which one responds first successfully
-      const apiEndpoints = [
-        "https://cardioaiapi.vercel.app/api/predict",
-        "https://cardiovascular-disease-predictor-j5a7.onrender.com/api/predict",
-        "http://localhost:8082/api/predict"
-      ];
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+      // API Endpoints prioritization: Render first, then Vercel
+      const renderUrl = "https://cardiovascular-disease-predictor-j5a7.onrender.com/api/predict";
+      const vercelUrl = "https://cardioaiapi.vercel.app/api/predict";
 
       let response;
       let usedUrl;
 
       try {
-        console.log("Starting concurrent API requests...");
+        console.log("Attempting Render API...");
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout for Render
         
-        // Create a promise for each endpoint
-        const requests = apiEndpoints.map(async (url) => {
-            try {
-                const res = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload),
-                    signal: controller.signal
-                });
-                
-                if (!res.ok) {
-                    throw new Error(`Status ${res.status}`);
-                }
-                
-                // If we get here, this request succeeded
-                return { response: res, url }; 
-            } catch (err) {
-                console.warn(`Request to ${url} failed or was slower:`, err);
-                throw err; // Re-throw to let Promise.any know this one failed
-            }
-        });
+        try {
+            const res = await fetch(renderUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            
+            if (!res.ok) throw new Error(`Render API Status ${res.status}`);
+            
+            response = res;
+            usedUrl = renderUrl;
+        } catch (error) {
+            clearTimeout(timeoutId);
+            console.warn("Render API failed or timed out, switching to Vercel...", error);
+            
+            // Fallback to Vercel
+            const controllerVercel = new AbortController();
+            const timeoutIdVercel = setTimeout(() => controllerVercel.abort(), 10000); // 10s timeout for Vercel
 
-        // Wait for the FIRST successful response
-        const winner = await Promise.any(requests);
-        
-        response = winner.response;
-        usedUrl = winner.url;
-        clearTimeout(timeoutId);
+            const res = await fetch(vercelUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+                signal: controllerVercel.signal
+            });
+            clearTimeout(timeoutIdVercel);
+
+            if (!res.ok) throw new Error(`Vercel API Status ${res.status}`);
+            
+            response = res;
+            usedUrl = vercelUrl;
+        }
 
       } catch (error) {
-         // This block runs only if ALL requests fail (AggregateError)
          console.error("All API requests failed:", error);
          throw new Error("All prediction servers are currently unavailable. Please check your connection or try again later.");
       }
