@@ -7,14 +7,16 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+# --- Configuration ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-MODEL_PATH = 'best_xgboost_cvd_model.pkl'
+MODEL_PATH = 'cardio_model_week3.pkl'
 model_data = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Load model on startup
     global model_data
     if os.path.exists(MODEL_PATH):
         try:
