@@ -42,12 +42,29 @@ export function DetailModal({ item, open, onOpenChange }: DetailModalProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             Assessment Details
-            <Badge
-              variant={item.risk_level === "High" ? "destructive" : "default"}
-              className={item.risk_level === "Low" ? "bg-emerald-500" : ""}
-            >
-              {item.risk_level} Risk
-            </Badge>
+            {(() => {
+                let riskLevel = "Low";
+                let badgeClass = "bg-emerald-500 hover:bg-emerald-600";
+                let badgeVariant: "default" | "destructive" | "outline" | "secondary" = "default";
+
+                if (item.probability >= 0.65) {
+                    riskLevel = "High";
+                    badgeClass = "bg-red-500 hover:bg-red-600";
+                    badgeVariant = "destructive";
+                } else if (item.probability >= 0.40) {
+                    riskLevel = "Moderate";
+                    badgeClass = "bg-orange-500 hover:bg-orange-600";
+                }
+
+                return (
+                    <Badge
+                      variant={badgeVariant}
+                      className={badgeClass}
+                    >
+                      {riskLevel} Risk
+                    </Badge>
+                );
+            })()}
           </DialogTitle>
           <DialogDescription>
             Risk Probability: {(item.probability * 100).toFixed(1)}%

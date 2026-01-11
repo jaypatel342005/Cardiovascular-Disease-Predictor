@@ -13,30 +13,99 @@ interface ResultCardProps {
 }
 
 export function ResultCard({ prediction, probability, riskLevel }: ResultCardProps) {
-  const isHighRisk = prediction === 1;
   const percentage = Math.round(probability * 100);
   
+  // Determine Risk Category based on Probability
+  let riskCategory: 'LOW' | 'MODERATE' | 'HIGH' = 'LOW';
+  if (probability >= 0.65) riskCategory = 'HIGH';
+  else if (probability >= 0.40) riskCategory = 'MODERATE';
+  else riskCategory = 'LOW';
+
   // Gauge Config
   const radius = 80;
   const circumference = 2 * Math.PI * radius;
-  // Arc logic: we want a semi-circle gauge (180 degrees)
-  // But let's stick to the full custom SVG gauge for better control
   const strokeDashoffset = circumference - (probability * circumference);
 
-  const getRiskColor = (prob: number) => {
-    if (prob < 0.3) return "text-emerald-500";
-    if (prob < 0.7) return "text-orange-500";
-    return "text-red-500";
+  const getRiskColor = (category: string) => {
+    switch (category) {
+        case 'LOW': return "text-emerald-500";
+        case 'MODERATE': return "text-orange-500";
+        case 'HIGH': return "text-red-500";
+        default: return "text-emerald-500";
+    }
   };
 
-  const getRiskGradient = (prob: number) => {
-     if (prob < 0.3) return "from-emerald-500 to-green-400";
-     if (prob < 0.7) return "from-orange-500 to-amber-400";
-     return "from-red-500 to-rose-400";
+  const getRiskBg = (category: string) => {
+      switch (category) {
+          case 'LOW': return "border-emerald-500/30 bg-gradient-to-br from-emerald-950/20 via-background to-background";
+          // Use orange-950 for the gradient to match the depth of other cards
+          case 'MODERATE': return "border-orange-500/30 bg-gradient-to-br from-orange-950/20 via-background to-background";
+          case 'HIGH': return "border-red-500/30 bg-gradient-to-br from-red-950/20 via-background to-background";
+          default: return "border-emerald-500/30 bg-gradient-to-br from-emerald-950/20 via-background to-background";
+      }
   };
 
-  const riskColor = getRiskColor(probability);
-  const riskGradient = getRiskGradient(probability);
+  const getBadgeStyle = (category: string) => {
+      switch (category) {
+          case 'LOW': return "border-emerald-500/30 text-emerald-400 bg-emerald-500/5";
+          case 'MODERATE': return "border-orange-500/30 text-orange-400 bg-orange-500/5";
+          case 'HIGH': return "border-red-500/30 text-red-400 bg-red-500/5";
+          default: return "border-emerald-500/30 text-emerald-400 bg-emerald-500/5";
+      }
+  };
+
+  const getIcon = (category: string) => {
+      switch (category) {
+          case 'LOW': return <CheckCircle className="w-24 h-24 text-emerald-500/10 rotate-12" />;
+          case 'MODERATE': return <Activity className="w-24 h-24 text-orange-500/10 rotate-12" />;
+          case 'HIGH': return <AlertOctagon className="w-24 h-24 text-red-500/10 rotate-12" />;
+          default: return <CheckCircle className="w-24 h-24 text-emerald-500/10 rotate-12" />;
+      }
+  };
+
+    const getGlowColor = (category: string) => {
+        switch (category) {
+            case 'LOW': return "bg-emerald-500";
+            case 'MODERATE': return "bg-orange-500";
+            case 'HIGH': return "bg-red-500";
+            default: return "bg-emerald-500";
+        }
+    };
+    
+    const getGradientStops = (category: string) => {
+        switch (category) {
+            case 'LOW': 
+                return (
+                    <>
+                        <stop offset="0%" stopColor="#10b981" />
+                        <stop offset="100%" stopColor="#34d399" />
+                    </>
+                );
+            case 'MODERATE':
+                return (
+                    <>
+                        <stop offset="0%" stopColor="#f97316" />
+                        <stop offset="100%" stopColor="#fbbf24" />
+                    </>
+                );
+            case 'HIGH':
+                return (
+                    <>
+                        <stop offset="0%" stopColor="#ef4444" />
+                        <stop offset="100%" stopColor="#b91c1c" />
+                    </>
+                );
+             default:
+                return (
+                    <>
+                        <stop offset="0%" stopColor="#10b981" />
+                        <stop offset="100%" stopColor="#34d399" />
+                    </>
+                );
+        }
+    }
+
+  const riskColorClass = getRiskColor(riskCategory);
 
   return (
     <motion.div
@@ -48,30 +117,28 @@ export function ResultCard({ prediction, probability, riskLevel }: ResultCardPro
       <Card
         className={cn(
           "overflow-hidden border shadow-2xl backdrop-blur-3xl relative z-10 h-full",
-          isHighRisk
-            ? "border-red-500/30 bg-gradient-to-br from-red-950/20 via-background to-background"
-            : "border-emerald-500/30 bg-gradient-to-br from-emerald-950/20 via-background to-background"
+          getRiskBg(riskCategory)
         )}
       >
         <div className="absolute top-0 right-0 p-4 opacity-50">
-            {isHighRisk ? <AlertOctagon className="w-24 h-24 text-red-500/10 rotate-12" /> : <CheckCircle className="w-24 h-24 text-emerald-500/10 rotate-12" />}
+            {getIcon(riskCategory)}
         </div>
 
         <CardHeader className="pb-2 relative z-10">
            <div className="flex justify-between items-start">
               <div>
-                  <Badge variant="outline" className={cn("mb-2 uppercase tracking-widest text-[10px] py-1 px-3", isHighRisk ? "border-red-500/30 text-red-400 bg-red-500/5" : "border-emerald-500/30 text-emerald-400 bg-emerald-500/5")}>
+                  <Badge variant="outline" className={cn("mb-2 uppercase tracking-widest text-[10px] py-1 px-3", getBadgeStyle(riskCategory))}>
                     AI Diagnosis
                   </Badge>
                   <CardTitle className="text-3xl md:text-4xl font-black tracking-tight flex items-center gap-3">
-                    {isHighRisk ? (
-                        <span className="text-red-500 drop-shadow-sm">High Risk</span>
-                    ) : (
-                        <span className="text-emerald-500 drop-shadow-sm">Low Risk</span>
-                    )}
+                    <span className={cn("drop-shadow-sm", riskColorClass)}>
+                        {riskCategory === 'HIGH' ? "High Risk" : riskCategory === 'MODERATE' ? "Moderate Risk" : "Low Risk"}
+                    </span>
                   </CardTitle>
                   <CardDescription className="text-base mt-2 max-w-sm">
-                      Our advanced AI model has analyzed your vitals and detected {isHighRisk ? "significant" : "minimal"} patterns associated with cardiovascular disease.
+                      Our advanced AI model has analyzed your vitals and detected 
+                      {riskCategory === 'HIGH' ? " significant" : riskCategory === 'MODERATE' ? " moderate" : " minimal"} 
+                      patterns associated with cardiovascular disease.
                   </CardDescription>
               </div>
            </div>
@@ -82,7 +149,7 @@ export function ResultCard({ prediction, probability, riskLevel }: ResultCardPro
             {/* Main Gauge Visualization */}
             <div className="relative w-80 h-80 flex items-center justify-center mb-8">
                 {/* Glow Effect */}
-                <div className={cn("absolute inset-0 rounded-full blur-[50px] opacity-20", isHighRisk ? "bg-red-500" : "bg-emerald-500")}></div>
+                <div className={cn("absolute inset-0 rounded-full blur-[50px] opacity-20", getGlowColor(riskCategory))}></div>
 
                 <svg className="w-full h-full transform -rotate-90 relative z-10 drop-shadow-2xl" viewBox="0 0 256 256">
                     {/* Background Track */}
@@ -113,8 +180,7 @@ export function ResultCard({ prediction, probability, riskLevel }: ResultCardPro
                     {/* Defs for Gradient */}
                     <defs>
                         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor={isHighRisk ? "#ef4444" : "#10b981"} />
-                            <stop offset="100%" stopColor={isHighRisk ? "#b91c1c" : "#34d399"} />
+                            {getGradientStops(riskCategory)}
                         </linearGradient>
                     </defs>
                 </svg>
@@ -126,7 +192,7 @@ export function ResultCard({ prediction, probability, riskLevel }: ResultCardPro
                          {percentage}%
                      </div>
                      <Badge variant="secondary" className="mt-2 text-xs font-mono">
-                         Confidence: {(probability > 0.8 || probability < 0.2) ? 'High' : 'Moderate'}
+                         Confidence: {riskCategory === 'MODERATE' ? 'Moderate' : 'High'}
                      </Badge>
                 </div>
             </div>
@@ -140,7 +206,9 @@ export function ResultCard({ prediction, probability, riskLevel }: ResultCardPro
                 </div>
                 <div className="bg-card/30 rounded-xl p-4 border border-border/50 backdrop-blur-sm flex flex-col justify-center items-center text-center">
                     <HeartPulse className="w-6 h-6 text-pink-500 mb-2" />
-                    <span className="text-xl font-bold">{isHighRisk ? "Action Req" : "Stable"}</span>
+                    <span className="text-xl font-bold">
+                        {riskCategory === 'HIGH' ? "Action Req" : riskCategory === 'MODERATE' ? "Monitor" : "Stable"}
+                    </span>
                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Status</span>
                 </div>
             </div>

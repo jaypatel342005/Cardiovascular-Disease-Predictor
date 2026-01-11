@@ -150,11 +150,15 @@ export const columns: ColumnDef<HistoryItem>[] = [
     },
     cell: ({ row }) => {
       const probability = row.getValue("probability") as number
+      let barColor = "bg-emerald-500";
+      if (probability >= 0.65) barColor = "bg-red-500";
+      else if (probability >= 0.40) barColor = "bg-orange-500";
+
       return (
         <div className="flex items-center gap-2">
           <div className="w-16 bg-muted rounded-full h-2 overflow-hidden">
             <div
-              className={`h-full ${probability > 0.5 ? "bg-red-500" : "bg-emerald-500"}`}
+              className={`h-full ${barColor}`}
               style={{ width: `${probability * 100}%` }}
             />
           </div>
@@ -178,11 +182,25 @@ export const columns: ColumnDef<HistoryItem>[] = [
       )
     },
     cell: ({ row }) => {
-      const riskLevel = row.getValue("risk_level") as string
+      const probability = row.getValue("probability") as number;
+      let riskLevel = "Low";
+      let badgeVariant: "default" | "destructive" | "outline" | "secondary" = "default";
+      let badgeClass = "bg-emerald-500 hover:bg-emerald-600";
+
+      if (probability >= 0.65) {
+          riskLevel = "High";
+          badgeVariant = "destructive";
+          badgeClass = "";
+      } else if (probability >= 0.40) {
+          riskLevel = "Moderate";
+          badgeVariant = "default"; // or secondary, but we force color class
+          badgeClass = "bg-orange-500 hover:bg-orange-600";
+      }
+
       return (
         <Badge
-          variant={riskLevel === "High" ? "destructive" : "default"}
-          className={riskLevel === "Low" ? "bg-emerald-500 hover:bg-emerald-600" : ""}
+          variant={badgeVariant}
+          className={badgeClass}
         >
           {riskLevel} Risk
         </Badge>

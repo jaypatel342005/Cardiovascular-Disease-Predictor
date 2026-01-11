@@ -16,15 +16,22 @@ interface StatsOverviewProps {
 
 export function StatsOverview({ history }: StatsOverviewProps) {
   const totalAssessments = history.length
-  const avgProbability = history.length > 0
-    ? history.reduce((sum, item) => sum + item.probability, 0) / history.length
-    : 0
   
-  const highRiskCount = history.filter(item => item.risk_level === 'High').length
-  const lowRiskCount = history.filter(item => item.risk_level === 'Low').length
-  
-  const latestAssessment = history[0]
+  // Calculate counts based on probability to ensure consistency with new thresholds
+  let highRiskCount = 0;
+  let moderateRiskCount = 0;
+  let lowRiskCount = 0;
 
+  history.forEach(item => {
+      if (item.probability >= 0.65) {
+          highRiskCount++;
+      } else if (item.probability >= 0.40) {
+          moderateRiskCount++;
+      } else {
+          lowRiskCount++;
+      }
+  });
+  
   const stats = [
     {
       title: "Total Assessments",
@@ -36,15 +43,13 @@ export function StatsOverview({ history }: StatsOverviewProps) {
       borderColor: "border-blue-500/20"
     },
     {
-      title: "Average Risk",
-      value: `${(avgProbability * 100).toFixed(1)}%`,
+      title: "Moderate Risk",
+      value: moderateRiskCount,
       icon: Activity,
-      description: "Across all assessments",
-      color: avgProbability > 0.5 ? "text-orange-500" : "text-emerald-500",
-      gradient: avgProbability > 0.5 
-        ? "from-orange-500/20 via-orange-500/10 to-transparent" 
-        : "from-emerald-500/20 via-emerald-500/10 to-transparent",
-      borderColor: avgProbability > 0.5 ? "border-orange-500/20" : "border-emerald-500/20"
+      description: `${totalAssessments > 0 ? ((moderateRiskCount / totalAssessments) * 100).toFixed(0) : 0}% of total`,
+      color: "text-orange-500",
+      gradient: "from-orange-500/20 via-orange-500/10 to-transparent",
+      borderColor: "border-orange-500/20"
     },
     {
       title: "High Risk",

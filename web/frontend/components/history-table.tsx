@@ -81,19 +81,33 @@ export function HistoryTable() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {history.map((item) => (
-                                <TableRow key={item.id}>
-                                    <TableCell>{format(new Date(item.timestamp), 'MMM d, yyyy HH:mm')}</TableCell>
-                                    <TableCell>{item.age}</TableCell>
-                                    <TableCell>{(item.gender === 1 || item.gender === 'female') ? 'Female' : 'Male'}</TableCell>
-                                    <TableCell>{(item.probability * 100).toFixed(1)}%</TableCell>
-                                    <TableCell className="text-right">
-                                        <Badge variant={item.risk_level === 'High' ? 'destructive' : 'default'} className={item.risk_level === 'Low' ? 'bg-emerald-500 hover:bg-emerald-600' : ''}>
-                                            {item.risk_level} Risk
-                                        </Badge>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                            {history.map((item) => {
+                                // Calculate risk level dynamically to match ResultCard logic
+                                let riskLevel = 'Low';
+                                let badgeColor = 'bg-emerald-500 hover:bg-emerald-600 text-white';
+                                
+                                if (item.probability >= 0.65) {
+                                    riskLevel = 'High';
+                                    badgeColor = 'bg-red-500 hover:bg-red-600 text-white';
+                                } else if (item.probability >= 0.40) {
+                                    riskLevel = 'Moderate';
+                                    badgeColor = 'bg-orange-500 hover:bg-orange-600 text-white';
+                                }
+
+                                return (
+                                    <TableRow key={item.id}>
+                                        <TableCell>{format(new Date(item.timestamp), 'MMM d, yyyy HH:mm')}</TableCell>
+                                        <TableCell>{item.age}</TableCell>
+                                        <TableCell>{(item.gender === 1 || item.gender === 'female') ? 'Female' : 'Male'}</TableCell>
+                                        <TableCell>{(item.probability * 100).toFixed(1)}%</TableCell>
+                                        <TableCell className="text-right">
+                                            <Badge className={badgeColor} variant="secondary">
+                                                {riskLevel} Risk
+                                            </Badge>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                         </TableBody>
                     </Table>
                 </div>
