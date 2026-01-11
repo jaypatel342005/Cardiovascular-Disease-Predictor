@@ -4,21 +4,16 @@ import { Button } from "@/components/ui/button";
 import { 
   Database, 
   Settings, 
-  Activity, 
-  GitBranch, 
   ArrowRight,
   Github, 
   ExternalLink,
-  Stethoscope,
-  Microscope,
-  TrendingUp,
-  AlertCircle,
   BrainCircuit,
-  Heart
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { SiteFooter } from "@/components/site-footer";
+import { ProjectRetrospective } from "@/components/project-retrospective";
+import { CraftButton, CraftButtonLabel, CraftButtonIcon } from "@/components/ui/craft-button";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -40,8 +35,22 @@ export default function Home() {
         
         {/* Superior Hero Section */}
         <div className="text-center space-y-6 max-w-4xl mx-auto">
-           <Badge variant="outline" className="mb-4 border-primary/20 text-primary bg-primary/5 uppercase tracking-widest text-[10px] py-1 px-3">
-             Machine Learning • Healthcare • AI
+           <Badge variant="outline" className="mb-4 border-blue-500/20 text-blue-600 bg-blue-500/5 uppercase tracking-widest text-[11px] py-1.5 px-4 rounded-full shadow-sm backdrop-blur-sm flex items-center gap-3 w-fit mx-auto">
+             <span className="relative flex h-2 w-2">
+               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
+               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+             </span>
+             Machine Learning
+             <span className="relative flex h-2 w-2">
+               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
+               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+             </span>
+             Healthcare
+             <span className="relative flex h-2 w-2">
+               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
+               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+             </span>
+             AI
            </Badge>
 
            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight">
@@ -53,14 +62,19 @@ export default function Home() {
            
            <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
              An end-to-end AI pipeline engineered to detect cardiovascular disease with 
-             <span className="font-semibold text-foreground"> 73.55%+ accuracy</span> 
+             <span className="font-semibold text-foreground"> 73.6%+ accuracy</span> 
            </p>
 
            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-               <Link href="/assessment">
-                  <Button size="lg" className="h-12 px-8 text-lg gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all rounded-full">
-                    Start AI Assessment <ArrowRight className="w-5 h-5" />
-                  </Button>
+                <Link href="/assessment">
+                  <div className="rounded-full animate-heartbeat-action">
+                    <CraftButton size="lg" className="h-14 px-8 text-lg gap-2 shadow-lg shadow-rose-500/20 hover:shadow-rose-500/40 transition-all rounded-full">
+                      <CraftButtonLabel>Start AI Assessment</CraftButtonLabel>
+                      <CraftButtonIcon>
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </CraftButtonIcon>
+                    </CraftButton>
+                  </div>
                </Link>
                <div className="flex gap-3">
                  <Link href="https://github.com/jaypatel342005/Cardiovascular-Disease-Predictor" target="_blank">
@@ -79,7 +93,7 @@ export default function Home() {
            {/* Quick Stats */}
            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 border-t border-border/40 mt-12">
               <div className="p-4 rounded-2xl bg-card/50 backdrop-blur border border-border/50">
-                  <div className="text-3xl font-bold text-blue-500">70k</div>
+                  <div className="text-3xl font-bold text-blue-500">68.6k</div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Patient Records</div>
               </div>
               <div className="p-4 rounded-2xl bg-card/50 backdrop-blur border border-border/50">
@@ -87,12 +101,12 @@ export default function Home() {
                   <div className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Clinical Features</div>
               </div>
               <div className="p-4 rounded-2xl bg-card/50 backdrop-blur border border-border/50">
-                  <div className="text-3xl font-bold text-green-500">77%</div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Recall Rate</div>
+                  <div className="text-3xl font-bold text-green-500">0.73</div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Macro F1-Score</div>
               </div>
                <div className="p-4 rounded-2xl bg-card/50 backdrop-blur border border-border/50">
-                  <div className="text-3xl font-bold text-orange-500">0.80</div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider font-medium">ROC-AUC Score</div>
+                  <div className="text-3xl font-bold text-orange-500">10</div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Models Evaluated</div>
               </div>
            </div>
         </div>
@@ -150,7 +164,7 @@ export default function Home() {
                          </div>
                          <div className="p-2 bg-muted/50 rounded border flex justify-between items-center">
                             <span className="font-medium text-foreground">Optimization</span>
-                            <span className="text-[10px] uppercase font-bold text-green-600">Verified Accuracy: 73.5%</span>
+                            <span className="text-[10px] uppercase font-bold text-green-600">Verified Accuracy: 73.6%</span>
                          </div>
                     </div>
                 </CardContent>
@@ -158,44 +172,8 @@ export default function Home() {
         </div>
 
         {/* Results Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-card/30 rounded-3xl p-8 border border-border/50">
-           <div className="space-y-6">
-               <div className="flex items-center gap-2 text-primary font-medium tracking-wide text-sm uppercase">
-                    <Activity className="w-4 h-4" /> Performance Metrics
-               </div>
-               <h2 className="text-3xl font-bold">Battle of the Algorithms</h2>
-               <p className="text-muted-foreground leading-relaxed">
-                   We rigorously trained and compared three industry-standard classifiers. 
-                   <span className="text-foreground font-semibold"> XGBoost emerged as the champion</span>, edging out Random Forest and Gradient Boosting with superior stability.
-               </p>
-               <div className="space-y-3 pt-2">
-                    <div className="flex justify-between items-center p-3 bg-card border rounded-lg shadow-sm">
-                        <span className="font-semibold">XGBoost Classifier</span>
-                        <Badge className="bg-green-600">73.22% Accuracy</Badge>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-muted/20 border border-transparent rounded-lg">
-                        <span className="text-muted-foreground">Random Forest</span>
-                        <span className="font-mono text-sm">73.19%</span>
-                    </div>
-                     <div className="flex justify-between items-center p-3 bg-muted/20 border border-transparent rounded-lg">
-                        <span className="text-muted-foreground">Gradient Boosting</span>
-                        <span className="font-mono text-sm">73.14%</span>
-                    </div>
-               </div>
-           </div>
-           
-           <div className="relative h-full min-h-[300px] flex items-center justify-center bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl border border-white/5 p-8">
-               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
-               <div className="text-center space-y-2 relative z-10">
-                   <div className="text-6xl font-black text-foreground">0.73+</div>
-                   <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Balanced Accuracy</div>
-                   <div className="pt-4 flex flex-col gap-2">
-                       <Badge variant="secondary" className="justify-center py-1">Good Fit (No Overfitting)</Badge>
-                       <span className="text-[10px] text-muted-foreground">Train (75.19%) vs Test (73.22%)</span>
-                   </div>
-               </div>
-           </div>
-        </div>
+        {/* Deep Technical Retrospective */}
+        <ProjectRetrospective />
 
          <SiteFooter />
       </div>

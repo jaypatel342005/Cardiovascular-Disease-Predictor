@@ -71,12 +71,18 @@ const config: Config = {
         'ecg-scan': {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
+        },
+        'heartbeat-action': {
+          '0%': { boxShadow: '0 0 0 0 rgba(239, 68, 68, 0.7)', transform: 'scale(1)' },
+          '50%': { boxShadow: '0 0 0 20px rgba(239, 68, 68, 0)', transform: 'scale(1.05)' },
+          '100%': { boxShadow: '0 0 0 0 rgba(239, 68, 68, 0)', transform: 'scale(1)' },
         }
       },
       animation: {
         heartbeat: 'heartbeat 2s infinite ease-in-out',
         'heartbeat-double': 'heartbeat-double 1.3s ease-in-out infinite',
         'ecg-scan': 'ecg-scan 2s linear infinite',
+        'heartbeat-action': 'heartbeat-action 1.5s infinite ease-in-out',
       }
   	}
   },
