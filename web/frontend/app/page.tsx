@@ -113,62 +113,94 @@ export default function Home() {
 
         {/* Feature Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-             <Card className="border-primary/10 bg-gradient-to-br from-card to-primary/5 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-xl">
-                        <BrainCircuit className="text-primary w-6 h-6" />
-                        Our Mission
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="text-muted-foreground leading-relaxed">
-                   Cardiovascular disease is a leading global risk. We built this tool to act as a <strong>Digital Second Opinion</strong>. It looks at your health numbers—like blood pressure and weight—to spot patterns that might be invisible to the naked eye.
-                </CardContent>
-            </Card>
+             {/* Card 1: Our Mission (Blue/Primary) */}
+             {/* Card 1: Our Mission (Blue/Primary) */}
+             {/* Card 1: Our Mission (Blue/Primary) */}
+             {/* Card 1: Our Mission (Blue/Primary) */}
+             <Card className="group relative overflow-hidden transition-all duration-300 border hover:shadow-xl hover:shadow-indigo-500/20 hover:border-indigo-500/50 hover:-translate-y-1 bg-gradient-to-br from-indigo-50 via-white to-white dark:from-indigo-950 dark:via-slate-950 dark:to-slate-950">
+                 {/* Background Decorator */}
+                 <div className="absolute -right-2 -bottom-6 opacity-5 dark:opacity-10 pointer-events-none transition-transform group-hover:scale-110 duration-500">
+                     <BrainCircuit className="h-40 w-40 text-indigo-500 dark:text-indigo-400" />
+                 </div>
+                 <CardHeader>
+                     <CardTitle className="flex items-center gap-3 text-xl relative z-10">
+                         <BrainCircuit className="text-indigo-500 w-6 h-6" />
+                         Our Mission
+                     </CardTitle>
+                 </CardHeader>
+                 <CardContent className="text-muted-foreground leading-relaxed relative z-10">
+                    Cardiovascular disease is a leading global risk. We built this tool to act as a <strong>Digital Second Opinion</strong>. It looks at your health numbers—like blood pressure and weight—to spot patterns that might be invisible to the naked eye.
+                 </CardContent>
+             </Card>
 
-            <Card className="border-border/60 hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                        <Database className="w-5 h-5 text-blue-500" />
-                        How It Works
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-muted-foreground">
-                    <p>Just like a doctor checks your vitals, our system cleans and organizes the data to ensure accuracy:</p>
-                    <ul className="space-y-1.5 mt-2">
+             {/* Card 2: How It Works (Emerald/Green) */}
+             {/* Card 2: How It Works (Emerald/Green) */}
+             {/* Card 2: How It Works (Emerald/Green) */}
+             {/* Card 2: How It Works (Emerald/Green) */}
+             <Card className="group relative overflow-hidden transition-all duration-300 border hover:shadow-xl hover:shadow-emerald-500/20 hover:border-emerald-500/50 hover:-translate-y-1 bg-gradient-to-br from-emerald-50 via-white to-white dark:from-emerald-950 dark:via-slate-950 dark:to-slate-950">
+                 {/* Background Decorator */}
+                 <div className="absolute -right-2 -bottom-6 opacity-5 dark:opacity-10 pointer-events-none transition-transform group-hover:scale-110 duration-500">
+                     <Database className="h-40 w-40 text-emerald-500 dark:text-emerald-400" />
+                 </div>
+                 <CardHeader>
+                     <CardTitle className="flex items-center gap-2 text-lg relative z-10">
+                         <Database className="w-5 h-5 text-emerald-500" />
+                         How It Works
+                     </CardTitle>
+                 </CardHeader>
+                 <CardContent className="space-y-2 text-sm text-muted-foreground relative z-10">
+                     <p>Just like a doctor checks your vitals, our system cleans and organizes the data to ensure accuracy:</p>
+                     <ul className="space-y-1.5 mt-2">
+                          <li className="flex gap-2 items-start">
+                             <span className="text-emerald-500 mt-0.5">✓</span> <strong>Smart Formatting:</strong> We convert all measurements into a standard format so nothing gets lost in translation.
+                         </li>
                          <li className="flex gap-2 items-start">
-                            <span className="text-green-500 mt-0.5">✓</span> <strong>Smart Formatting:</strong> We convert all measurements into a standard format so nothing gets lost in translation.
-                        </li>
-                        <li className="flex gap-2 items-start">
-                            <span className="text-green-500 mt-0.5">✓</span> <strong>Error Checking:</strong> We automatically filter out mistakes, like impossible blood pressure readings.
-                        </li>
-                         <li className="flex gap-2 items-start">
-                            <span className="text-green-500 mt-0.5">✓</span> <strong>Fair Testing:</strong> We kept 20% of our data hidden to strictly test the AI's final performance.
-                        </li>
-                    </ul>
-                </CardContent>
-            </Card>
+                             <span className="text-emerald-500 mt-0.5">✓</span> <strong>Error Checking:</strong> We automatically filter out mistakes, like impossible blood pressure readings.
+                         </li>
+                          <li className="flex gap-2 items-start">
+                             <span className="text-emerald-500 mt-0.5">✓</span> <strong>Fair Testing:</strong> We kept 20% of our data hidden to strictly test the AI's final performance.
+                         </li>
+                     </ul>
+                 </CardContent>
+             </Card>
 
-            <Card className="border-border/60 hover:border-orange-500/30 transition-all duration-300 hover:-translate-y-1">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                        <Settings className="w-5 h-5 text-orange-500" />
-                        Smart Analysis
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-muted-foreground">
-                    <p>The AI doesn't just guess; it calculates new health indicators to get a better picture:</p>
-                    <div className="space-y-2 mt-2">
-                         <div className="p-2 bg-muted/50 rounded border flex justify-between items-center">
-                            <span className="font-medium text-foreground">BMI & Blood Flow</span>
-                            <span className="text-[10px] uppercase">Combined Health Signals</span>
-                         </div>
-                         <div className="p-2 bg-muted/50 rounded border flex justify-between items-center">
-                            <span className="font-medium text-foreground">Optimization</span>
-                            <span className="text-[10px] uppercase font-bold text-green-600">Verified Accuracy: 73.6%</span>
-                         </div>
-                    </div>
-                </CardContent>
-            </Card>
+             {/* Card 3: Smart Analysis (Orange) */}
+             {/* Card 3: Smart Analysis (Orange) */}
+             {/* Card 3: Smart Analysis (Orange) */}
+             {/* Card 3: Smart Analysis (Orange) */}
+             <Card className="group relative overflow-hidden transition-all duration-300 border hover:shadow-xl hover:shadow-orange-500/20 hover:border-orange-500/50 hover:-translate-y-1 bg-gradient-to-br from-orange-50 via-white to-white dark:from-orange-950 dark:via-slate-950 dark:to-slate-950">
+                 {/* Background Decorator */}
+                 <div className="absolute -right-2 -bottom-6 opacity-5 dark:opacity-10 pointer-events-none transition-transform group-hover:scale-110 duration-500">
+                     <Settings className="h-40 w-40 text-orange-500 dark:text-orange-400" />
+                 </div>
+                 <CardHeader>
+                     <CardTitle className="flex items-center gap-2 text-lg relative z-10">
+                         <Settings className="w-5 h-5 text-orange-500" />
+                         Smart Analysis
+                     </CardTitle>
+                 </CardHeader>
+                 <CardContent className="space-y-2 text-sm text-muted-foreground relative z-10">
+                     <p>The AI doesn't just guess; it calculates new health indicators to get a better picture:</p>
+                     <div className="space-y-2 mt-2">
+                          <div className="p-2 bg-muted/50 rounded border flex justify-between items-center">
+                             <span className="font-medium text-foreground">BMI & Blood Flow</span>
+                             <span className="text-[10px] uppercase">Combined Health Signals</span>
+                          </div>
+                          <div className="p-2 bg-muted/50 rounded border flex justify-between items-center">
+                             <span className="font-medium text-foreground">Optimization</span>
+                             <span className="text-[10px] uppercase font-bold text-green-600">Verified Accuracy: 73.6%</span>
+                          </div>
+                          <div className="p-2 bg-muted/50 rounded border flex justify-between items-center">
+                             <span className="font-medium text-foreground">Architecture</span>
+                             <span className="text-[10px] uppercase">XGBoost Ensemble</span>
+                          </div>
+                          <div className="p-2 bg-muted/50 rounded border flex justify-between items-center">
+                             <span className="font-medium text-foreground">Speed</span>
+                             <span className="text-[10px] uppercase text-blue-500 font-semibold">&lt; 100ms Inference</span>
+                          </div>
+                     </div>
+                 </CardContent>
+             </Card>
         </div>
 
         {/* Results Section */}
