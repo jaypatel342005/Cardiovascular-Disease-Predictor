@@ -4,8 +4,8 @@
 # 🫀 CardioAI – Cardiovascular Disease Predictor
 
 <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-<img src="https://img.shields.io/badge/scikit--learn-ML-blue?style=for-the-badge&logo=scikitlearn&logoColor=white" alt="scikit-learn">
-<img src="https://img.shields.io/badge/XGBoost-Gradient%20Boosting-orange?style=for-the-badge" alt="XGBoost">
+<img src="https://img.shields.io/badge/scikit--learn-ML-0084C7?style=for-the-badge&logo=scikitlearn&logoColor=white" alt="scikit-learn">
+<img src="https://img.shields.io/badge/XGBoost-Gradient%20Boosting-FF6F00?style=for-the-badge" alt="XGBoost">
 <img src="https://img.shields.io/badge/Next.js-Frontend-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js">
 <img src="https://img.shields.io/badge/Vercel-Hosting-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel">
 
@@ -19,29 +19,27 @@
 
 ## 📑 Table of Contents
 
-- [🫀 CardioAI – Cardiovascular Disease Predictor](#-cardioai--cardiovascular-disease-predictor)
-  - [📑 Table of Contents](#-table-of-contents)
-  - [🌟 Overview](#-overview)
-  - [🌍 Live Preview](#-live-preview)
-  - [✨ Features](#-features)
-  - [🧠 ML Workflow](#-ml-workflow)
-  - [🧪 Dataset & Features](#-dataset--features)
-  - [📊 Model Performance](#-model-performance)
-  - [🛠 Tech Stack](#-tech-stack)
-  - [📦 Installation](#-installation)
-  - [🚀 Getting Started](#-getting-started)
-  - [📂 Project Structure](#-project-structure)
-  - [🧠 Project Retrospective](#-project-retrospective)
-  - [📌 Future Improvements](#-future-improvements)
-  - [🤝 Contribution](#-contribution)
-  - [🔐 License](#-license)
-  - [📞 Contact & Author](#-contact--author)
+- [🌟 Overview](#-overview)
+- [🌍 Live Preview](#-live-preview)
+- [✨ Features](#-features)
+- [🧠 ML Workflow](#-ml-workflow)
+- [🧪 Dataset & Features](#-dataset--features)
+- [📊 Model Performance](#-model-performance)
+- [🛠 Tech Stack](#-tech-stack)
+- [📦 Installation](#-installation)
+- [🚀 Getting Started](#-getting-started)
+- [📂 Project Structure](#-project-structure)
+- [🧠 Project Retrospective](#-project-retrospective)
+- [📌 Future Improvements](#-future-improvements)
+- [🤝 Contribution](#-contribution)
+- [🔐 License](#-license)
+- [📞 Contact & Author](#-contact--author)
 
 ---
 
 ## 🌟 Overview
 
-CardioAI is a **cardiovascular disease prediction system** that combines a complete machine learning pipeline with a clean, responsive web interface.  
+CardioAI is a **cardiovascular disease prediction system** that combines a full machine learning pipeline with a clean, responsive web interface.  
 It predicts whether a patient is likely to have cardiovascular disease based on routine health measurements and lifestyle indicators.
 
 > ⚠️ **Disclaimer:** This project is for **educational and research** purposes only and must **not** be used as a medical device or for clinical decision-making.
@@ -61,7 +59,7 @@ It predicts whether a patient is likely to have cardiovascular disease based on 
 Use the web interface to:
 
 - Enter patient details (age, gender, blood pressure, cholesterol, BMI, habits).
-- Get an instant prediction (low/high risk).
+- Get an instant prediction (low / high risk).
 - View a risk probability score.
 
 ---
@@ -83,7 +81,7 @@ Use the web interface to:
 - 🌐 **Modern Web UI**  
   Clean, responsive form-based UI (Next.js / React) deployed on **Vercel**.
 
-- ⚙️ **Production-Friendly Artifacts**  
+- ⚙️ **Production-Ready Artifacts**  
   Trained models and scaler exported as `.pkl` files for easy reuse and integration.
 
 ---
@@ -113,7 +111,7 @@ The project follows a **structured ML lifecycle**:
    - Use `GridSearchCV` with 5-fold CV to tune:
      - **XGBoost**
      - **RandomForest**
-   - Focus on cross-validation accuracy and macro F1.
+   - Optimize for cross-validation accuracy and macro F1.
 
 5. **Final Model Selection**
    - Choose tuned **XGBoost** as the final model (slightly better CV accuracy than tuned RandomForest).
@@ -126,28 +124,29 @@ The project follows a **structured ML lifecycle**:
 
 ## 🧪 Dataset & Features
 
-- **Dataset:** `cardio_cleaned_week2.csv`
-- **Total Records:** `68,641`
+- **Dataset:** `cardio_cleaned_week2.csv`  
+- **Total Records:** `68,641`  
+
 - **Target Column:**
   - `cardio` – 0 (no CVD) or 1 (presence of CVD)
 
 ### Features Used (13)
 
 | Feature       | Description                                |
-|---------------|--------------------------------------------|
-| `gender`      | Encoded biological sex                    |
-| `height`      | Height in centimeters                     |
-| `weight`      | Weight in kilograms                       |
-| `ap_hi`       | Systolic blood pressure                   |
-| `ap_lo`       | Diastolic blood pressure                  |
-| `cholesterol` | Categorical cholesterol level             |
-| `gluc`        | Categorical glucose level                 |
-| `smoke`       | Smoking status (0/1)                      |
-| `alco`        | Alcohol intake (0/1)                      |
-| `active`      | Physical activity (0/1)                   |
-| `age_years`   | Age in years                              |
-| `bmi`         | Body Mass Index                           |
-| `MAP`         | Mean Arterial Pressure                    |
+|--------------|--------------------------------------------|
+| `gender`     | Encoded biological sex                     |
+| `height`     | Height in centimeters                      |
+| `weight`     | Weight in kilograms                        |
+| `ap_hi`      | Systolic blood pressure                    |
+| `ap_lo`      | Diastolic blood pressure                   |
+| `cholesterol`| Categorical cholesterol level              |
+| `gluc`       | Categorical glucose level                  |
+| `smoke`      | Smoking status (0/1)                       |
+| `alco`       | Alcohol intake (0/1)                       |
+| `active`     | Physical activity (0/1)                    |
+| `age_years`  | Age in years                               |
+| `bmi`        | Body Mass Index                            |
+| `MAP`        | Mean Arterial Pressure                     |
 
 **Excluded Columns**
 
@@ -155,7 +154,7 @@ The project follows a **structured ML lifecycle**:
 
 ### Train–Test Split
 
-- **Train:** 80% → `(54912, 13)`
+- **Train:** 80% → `(54912, 13)`  
 - **Test:** 20% → `(13729, 13)`
 
 ---
@@ -177,7 +176,7 @@ The project follows a **structured ML lifecycle**:
 | 9    | GaussianNB               | 71.48%        |
 | 10   | KNeighborsClassifier     | 70.70%        |
 
-All top ensemble models achieved **macro F1 ≈ 0.73**, with a balanced tradeoff between precision and recall.
+Top ensemble models achieved **macro F1 ≈ 0.73**, with a balanced tradeoff between precision and recall.
 
 ### Confusion Matrices (Initial Stage)
 
@@ -210,9 +209,9 @@ All top ensemble models achieved **macro F1 ≈ 0.73**, with a balanced tradeoff
   - `min_child_weight = 5`
   - `n_estimators = 200`
   - `reg_alpha = 0`
-- **Best CV Accuracy:** 73.63%
-- **Test Accuracy:** 73.12%
-- **Macro F1:** ≈ 0.73
+- **Best CV Accuracy:** 73.63%  
+- **Test Accuracy:** 73.12%  
+- **Macro F1:** ≈ 0.73  
 
 **RandomForest (Alternative Final Model)**
 
@@ -222,11 +221,11 @@ All top ensemble models achieved **macro F1 ≈ 0.73**, with a balanced tradeoff
   - `min_samples_leaf = 1`
   - `min_samples_split = 2`
   - `n_estimators = 200`
-- **Best CV Accuracy:** 73.50%
-- **Test Accuracy:** 72.98%
-- **Macro F1:** ≈ 0.73
+- **Best CV Accuracy:** 73.50%  
+- **Test Accuracy:** 72.98%  
+- **Macro F1:** ≈ 0.73  
 
-> 🔍 The tuned models slightly reduced point-test accuracy vs their initial variants but improved cross-validation robustness—prioritizing **generalization**.
+> 🔍 Tuned models slightly reduced single test-set accuracy vs their initial variants but improved cross-validation robustness—prioritizing **generalization**.
 
 ---
 
@@ -236,25 +235,25 @@ All top ensemble models achieved **macro F1 ≈ 0.73**, with a balanced tradeoff
 
 ### 🧮 Machine Learning
 
-<img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white">
-<img src="https://img.shields.io/badge/scikit--learn-ML-blue?style=for-the-badge&logo=scikitlearn&logoColor=white">
-<img src="https://img.shields.io/badge/XGBoost-Gradient%20Boosting-orange?style=for-the-badge">
-<img src="https://img.shields.io/badge/pandas-Data%20Processing-150458?style=for-the-badge&logo=pandas&logoColor=white">
+<img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+<img src="https://img.shields.io/badge/scikit--learn-ML-0084C7?style=for-the-badge&logo=scikitlearn&logoColor=white" alt="scikit-learn">
+<img src="https://img.shields.io/badge/XGBoost-Gradient%20Boosting-FF6F00?style=for-the-badge" alt="XGBoost">
+<img src="https://img.shields.io/badge/pandas-Data%20Processing-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="pandas">
 
 ### 🌐 Web & Deployment
 
-<img src="https://img.shields.io/badge/Next.js-Frontend-000000?style=for-the-badge&logo=nextdotjs&logoColor=white">
-<img src="https://img.shields.io/badge/React-UI-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
-<img src="https://img.shields.io/badge/Vercel-Hosting-000000?style=for-the-badge&logo=vercel&logoColor=white">
+<img src="https://img.shields.io/badge/Next.js-Frontend-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js">
+<img src="https://img.shields.io/badge/React-UI-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
+<img src="https://img.shields.io/badge/Vercel-Hosting-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel">
 
 ### 🧪 Development
 
-<img src="https://img.shields.io/badge/Jupyter-Notebooks-F37626?style=for-the-badge&logo=jupyter&logoColor=white">
-<img src="https://img.shields.io/badge/Git-Version%20Control-F05032?style=for-the-badge&logo=git&logoColor=white">
+<img src="https://img.shields.io/badge/Jupyter-Notebooks-F37626?style=for-the-badge&logo=jupyter&logoColor=white" alt="Jupyter">
+<img src="https://img.shields.io/badge/Git-Version%20Control-F05032?style=for-the-badge&logo=git&logoColor=white" alt="Git">
 
 </div>
 
-
+---
 
 ## 📦 Installation
 
@@ -299,12 +298,12 @@ npm install
 
 ### 🧪 Run ML Experiments (Locally)
 
-1. Open the `.ipynb` notebooks inside the `notebooks/` directory.
+1. Open the `.ipynb` notebooks inside the `notebooks/` directory.  
 2. Run:
-   - Data preprocessing
-   - Baseline model training
-   - GridSearchCV tuning
-   - Model evaluation and export
+   - Data preprocessing  
+   - Baseline model training  
+   - GridSearchCV tuning  
+   - Model evaluation and export  
 
 ### 🧮 Local Inference Example
 
@@ -323,7 +322,7 @@ x = np.array([[1.00, 156.00, 85.00, 140.00, 90.00,
 
 x_scaled = scaler.transform(x)
 pred = model.predict(x_scaled)
-proba = model.predict_proba(x_scaled) [github](https://github.com/jaypatel342005/Cardiovascular-Disease-Predictor)
+proba = model.predict_proba(x_scaled) [img.shields](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-bad)
 
 print("Prediction (0=no CVD, 1=CVD):", pred)
 print("Probability of CVD:", proba)
@@ -340,7 +339,7 @@ npm run dev
 
 Then visit:
 
-- `http://localhost:3000` (or the port configured in your app)
+- `http://localhost:3000` (or the configured port)
 
 ---
 
@@ -358,13 +357,13 @@ Cardiovascular-Disease-Predictor/
 │   ├── 03_hyperparameter_tuning.ipynb
 │   └── 04_evaluation_and_export.ipynb
 ├── models/
-│   ├── best_xgboost_cvd_model.pkl       # Tuned XGBoost + scaler
-│   └── cardio_model_week3.pkl           # Tuned Random Forest + scaler
+│   ├── best_xgboost_cvd_model.pkl        # Tuned XGBoost + scaler
+│   └── cardio_model_week3.pkl            # Tuned Random Forest + scaler
 ├── src/
 │   ├── preprocessing.py
 │   ├── train.py
 │   └── evaluate.py
-├── frontend/                            # (If present) Next.js / React app
+├── frontend/                             # (If present) Next.js / React app
 │   ├── pages/
 │   ├── components/
 │   └── ...
@@ -376,17 +375,17 @@ Cardiovascular-Disease-Predictor/
 
 ## 🧠 Project Retrospective
 
-- **Broad Model Exploration Works:**  
+- **Broad Model Exploration Works**  
   Trying 10+ models early established a clear performance baseline and quickly highlighted that **ensemble methods** (XGBoost, RF, GB) were best suited for this dataset.
 
-- **Iterative Refinement is Key:**  
+- **Iterative Refinement is Key**  
   Two-phase approach (baseline → tuning) made the process structured and efficient.
 
-- **Performance Plateau (~73%):**  
+- **Performance Plateau (~73%)**  
   Top models converged around the same performance, suggesting that the current **feature set limits predictive power**.  
   To go beyond this ceiling, future work should focus on **better features** or **richer data**, not just different algorithms.
 
-- **Generalization over Point Accuracy:**  
+- **Generalization over Point Accuracy**  
   Slight drop in single test-set accuracy for tuned models was acceptable because **cross-validation metrics improved**, meaning better behavior on unseen data.
 
 ---
@@ -462,4 +461,3 @@ See the `LICENSE` file in this repository for more details.
 **Made with ❤️ to explore AI for cardiovascular health.**
 
 </div>
-```
