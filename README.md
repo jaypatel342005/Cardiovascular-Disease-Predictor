@@ -1,4 +1,4 @@
-```markdown
+
 <div align="center">
 
 # 🫀 CardioAI – Cardiovascular Disease Predictor
@@ -254,7 +254,7 @@ All top ensemble models achieved **macro F1 ≈ 0.73**, with a balanced tradeoff
 
 </div>
 
----
+
 
 ## 📦 Installation
 
