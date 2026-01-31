@@ -2,7 +2,6 @@
 
 <div align="center">
 
-![CardioAI Banner](https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=200&fit=crop&q=80)
 
 ### Advanced Machine Learning Pipeline for CVD Prediction
 
